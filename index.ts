@@ -1,3 +1,2 @@
-export * from "./lib/index.ts";
-import {IProgramWrapper, ProgramWrapper} from "./index.ts";
+import {IProgramWrapper, ProgramWrapper} from "./lib/index.ts";
 export const program: IProgramWrapper = new ProgramWrapper();
