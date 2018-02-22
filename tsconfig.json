@@ -10,6 +10,7 @@
     "target": "es2015",
     "jsx": "react",
     "jsxFactory": "React.createElement",
+    "declaration": true,
     "module": "commonjs",
     "newLine": "lf",
     "sourceMap": true,

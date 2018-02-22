@@ -1,17 +1,21 @@
 "use strict";
 
-var UglifyJsPlugin = require("webpack").optimize.UglifyJsPlugin;
+var path = require("path"),
+    UglifyJsPlugin = require("webpack").optimize.UglifyJsPlugin;
 
 module.exports = {
     context: __dirname,
-    entry: {index: __dirname + "/index.ts"},
+    entry: {index: path.join(__dirname, "index.ts")},
     output  : {
         filename          : "./index.js",
         sourceMapFilename : "./index.js.map",
         libraryTarget     : "commonjs",
-        path : __dirname
+        path : path.join(__dirname, "build")
     },
     devtool : "sourcemap",
+    resolve : {
+        extensions : [".ts", ".tsx", ".d.ts"]
+    },
     plugins :[
         new UglifyJsPlugin()
     ],
