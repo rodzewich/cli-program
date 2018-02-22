@@ -1,0 +1,35 @@
+{
+  "compilerOptions": {
+    "allowJs": false,
+    "checkJs": false,
+    "allowSyntheticDefaultImports": false,
+    "allowUnreachableCode": false,
+    "allowUnusedLabels": false,
+    "disableSizeLimit": true,
+    "charset": "utf8",
+    "target": "es2015",
+    "jsx": "react",
+    "jsxFactory": "React.createElement",
+    "module": "commonjs",
+    "newLine": "lf",
+    "sourceMap": true,
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+    "alwaysStrict": true,
+    "lib": [
+      "ES6",
+      "SCRIPTHOST",
+      "DOM"
+    ],
+    "noImplicitAny": true,
+    "suppressImplicitAnyIndexErrors": true,
+    "forceConsistentCasingInFileNames": true,
+    "typeRoots": [
+      "node_modules/@types"
+    ]
+  },
+  "exclude": [
+    "node_modules/*",
+    "node_modules/**/*"
+  ]
+}
