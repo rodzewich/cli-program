@@ -1,7 +1,8 @@
 "use strict";
 
 var path = require("path"),
-    UglifyJsPlugin = require("webpack").optimize.UglifyJsPlugin;
+    UglifyJsPlugin = require("webpack").optimize.UglifyJsPlugin,
+    NodeExternals  = require('webpack-node-externals');
 
 module.exports = {
     context: __dirname,
@@ -12,13 +13,12 @@ module.exports = {
         libraryTarget     : "commonjs",
         path : path.join(__dirname, "build")
     },
+    target  : 'node',
     devtool : "sourcemap",
-    resolve : {
-        extensions : [".ts", ".tsx", ".d.ts"]
-    },
-    plugins :[
+    plugins : [
         new UglifyJsPlugin()
     ],
+    externals : [NodeExternals()],
     module  : {
         loaders : [
             {
