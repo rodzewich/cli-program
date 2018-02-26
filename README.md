@@ -56,24 +56,26 @@ program
 
 ## Version option
 
-Calling the `version` implicitly adds the `-V` and `--version` options to the command.
+Calling the `version` implicitly adds the `-V` and `--version` options to the program.
 When either of these options is present, the command prints the version number and exits.
 
-    $ ./examples/pizza -V
-    0.0.1
+```
+$ ./examples/pizza -V
+0.0.1
+```
 
-If you want your program to respond to the `-v` option instead of the `-V` option, simply pass custom flags to the `version` method using the same syntax as the `option` method.
+If you want your program to respond to the `-v` option instead of the `-V` option, simply pass custom flags to the `version` method using the same syntax as the `option` method:
 
 ```ts
 program
-  .version("0.0.1", "-v, --version")
+  .version("0.0.1", "-v, --version");
 ```
 
 or with special description:
 
 ```ts
 program
-  .version("0.0.1", "-v, --version", "My special description for version option")
+  .version("0.0.1", "-v, --version", "My special description for version option");
 ```
 
 

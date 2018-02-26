@@ -319,7 +319,7 @@ export class ProgramWrapper implements IProgramWrapper {
             }
 
             if (findOptionByLong<IOptionValued>("version", programOpts)) {
-                process.stdout.write(program.getVersion() || "undefined");
+                process.stdout.write("Version: " + program.getVersion() || "undefined");
                 process.stdout.write("\n");
                 process.exit(0);
             }
