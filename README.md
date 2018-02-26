@@ -35,3 +35,38 @@ program
         console.log("  - %s cheese", opts.cheese);
     });
 ```
+
+Short flags may be passed as a single arg, for example `-abc` is equivalent to `-a -b -c`. Multi-word options such as "--template-engine" are camel-cased, becoming `args.templateEngine` etc.
+
+Note that multi-word options starting with `--no` prefix negate the boolean value of the following word. For example, `--no-sauce` sets the value of `args.sauce` to false.
+
+```ts
+import {program} from "cli-program";
+program
+    .version("0.1.0")
+    .option("-p, --password <string>", "Password to connect", null, ["no", "without"])
+    .parse(function (args: any, opts: any) {
+        if (opts.password === false) {
+            console.log("Without password!");
+        } else {
+            console.log("Password: %s", opts.password);
+        }
+    });
+```
+
+## Version option
+
+Calling the `version` implicitly adds the `-V` and `--version` options to the command.
+When either of these options is present, the command prints the version number and exits.
+
+    $ ./examples/pizza -V
+    0.0.1
+
+If you want your program to respond to the `-v` option instead of the `-V` option, simply pass custom flags to the `version` method using the same syntax as the `option` method.
+
+```ts
+program
+  .version('0.0.1', '-v, --version')
+```
+
+The version flags can be named anything, but the long option is required.
