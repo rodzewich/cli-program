@@ -1,8 +1,11 @@
 {
   "name": "cli-program",
-  "version": "0.0.1",
+  "version": "1.0.2",
+  "license": "MIT",
   "scripts": {
     "build": "rm -rf ./build && /usr/bin/env node ./node_modules/.bin/webpack",
+    "increment": "/usr/bin/env node ./increment.js",
+    "upload": "/usr/bin/env npm run increment && /usr/bin/env npm run build && /usr/bin/env npm publish ./build",
     "watch": "/usr/bin/env node ./node_modules/.bin/webpack --watch",
     "test": "echo test"
   },

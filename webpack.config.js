@@ -1,22 +1,31 @@
 "use strict";
 
-var path = require("path"),
+var fs = require("fs"),
+    path = require("path"),
     UglifyJsPlugin = require("webpack").optimize.UglifyJsPlugin,
-    NodeExternals  = require('webpack-node-externals');
+    NodeExternals  = require('webpack-node-externals'),
+    SOURCE_DIRECTORY = __dirname,
+    TARGET_DIRECTORY = path.join(SOURCE_DIRECTORY, "build"),
+    PackagePlugin = require("./plugins/package"),
+    DeclarationPlugin = require("./plugins/declaration"),
+    LicensePlugin = require("./plugins/license");
 
 module.exports = {
     context: __dirname,
-    entry: {index: path.join(__dirname, "index.ts")},
+    entry: {index: path.join(SOURCE_DIRECTORY, "index.ts")},
     output  : {
         filename          : "./index.js",
         sourceMapFilename : "./index.js.map",
         libraryTarget     : "commonjs",
-        path : path.join(__dirname, "build")
+        path : TARGET_DIRECTORY
     },
     target  : 'node',
     devtool : "sourcemap",
     plugins : [
-        new UglifyJsPlugin()
+        new UglifyJsPlugin(),
+        new PackagePlugin(SOURCE_DIRECTORY, TARGET_DIRECTORY),
+        new DeclarationPlugin(SOURCE_DIRECTORY, TARGET_DIRECTORY),
+        new LicensePlugin(SOURCE_DIRECTORY, TARGET_DIRECTORY)
     ],
     externals : [NodeExternals()],
     module  : {
