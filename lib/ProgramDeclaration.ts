@@ -27,10 +27,6 @@ export class ProgramDeclaration implements IProgramDeclaration {
             description : "Show help"
         }));
         this.addOption(new OptionDeclaration({
-            flags : "-V, --version",
-            description : "Show version"
-        }));
-        this.addOption(new OptionDeclaration({
             flags : "--color [value]",
             description : "Disable/enable output colors",
             negativePrefixes : ["no"]

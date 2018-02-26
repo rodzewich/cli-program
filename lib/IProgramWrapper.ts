@@ -2,7 +2,7 @@ import {ICommandWrapper} from "./ICommandWrapper.ts";
 
 export interface IProgramWrapper {
     name(name: string): IProgramWrapper;
-    version(version: string): IProgramWrapper;
+    version(version: string, flags?: string, description?: string): IProgramWrapper;
     description(description: string): IProgramWrapper;
     usage(usage: string): IProgramWrapper;
     option(flags: string, description?: string, defaultValue?: any, negativePrefixes?: string[], preparationFunction?: (value: any) => any): IProgramWrapper;

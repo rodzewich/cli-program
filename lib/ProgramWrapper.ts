@@ -27,9 +27,13 @@ export class ProgramWrapper implements IProgramWrapper {
         }
     }
 
-    public version(version: string): IProgramWrapper {
+    public version(version: string, flags?: string, description?: string): IProgramWrapper {
         try {
             program.setVersion(version);
+            program.addOption(new OptionDeclaration({
+                flags : flags || "-V, --version",
+                description : description || "Show version"
+            }));
             return this;
         } catch (error) {
             showError(error);
