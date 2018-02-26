@@ -8,28 +8,45 @@ import {ICommandValued} from "./ICommandValued.ts";
 import {IOptionDeclaration} from "./IOptionDeclaration.ts";
 import {ICommandDeclaration} from "./ICommandDeclaration.ts";
 
-export function showError(error: Error, help?: string): void {
+export function showError(error: Error, help?: string, stdout?: (content: string) => void, stderr?: (content: string) => void): void {
     const width: number = process.stdout.columns,
           lines: string[] = error.stack.split("\n");
-    if (help) {
-        process.stdout.write(help);
+
+    function showStdout(content: string): void {
+        if (typeof stdout === "function") {
+            stdout(content);
+        } else {
+            process.stdout.write(content);
+        }
     }
-    process.stderr.write("\n");
-    process.stderr.write(" " + colors.bgRed(new Array(width - 1).join(" ")) + "\n");
+
+    function showStderr(content: string): void {
+        if (typeof stdout === "function") {
+            stdout(content);
+        } else {
+            process.stderr.write(content);
+        }
+    }
+
+    if (help) {
+        showStdout(help);
+    }
+    showStderr("\n");
+    showStderr(" " + colors.bgRed(new Array(width - 1).join(" ")) + "\n");
     for (const [index, line] of lines.entries()) {
         const formattedLine: string[] = formatLine(line);
         if (index === 0) {
             for (const line of formattedLine) {
-                process.stderr.write(" " + colors.bgRed(colors.yellow(colors.bold(" " + line + " "))) + "\n");
+                showStderr(" " + colors.bgRed(colors.yellow(colors.bold(" " + line + " "))) + "\n");
             }
         } else {
             for (const line of formattedLine) {
-                process.stderr.write(" " + colors.bgRed(colors.white(" " + line + " ")) + "\n");
+                showStderr(" " + colors.bgRed(colors.white(" " + line + " ")) + "\n");
             }
         }
     }
-    process.stderr.write(" " + colors.bgRed(new Array(width - 1).join(" ")) + "\n");
-    process.stderr.write("\n");
+    showStderr(" " + colors.bgRed(new Array(width - 1).join(" ")) + "\n");
+    showStderr("\n");
 }
 
 export function formatLine(line: string): string[] {

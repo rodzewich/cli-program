@@ -104,13 +104,22 @@ export class ProgramWrapper implements IProgramWrapper {
         }
     }
 
-    public parse(action?: (args: {[key: string]: any}, opts: {[key: string]: any}) => void): void {
+    public parse(action?: (args: {[key: string]: any}, opts: {[key: string]: any}) => void, argv?: string[], stdout?: (content: string) => void, stderr?: (content: string) => void): void {
         let command: ICommandDeclaration;
-        const data: string[] = process.argv.slice(2),
+        const data: string[] = (argv || process.argv).slice(2),
             programArgs: IArgumentValued[] = [],
             programOpts: IOptionValued[]   = [],
             commandArgs: IArgumentValued[] = [],
             commandOpts: IOptionValued[]   = [];
+        
+        function showStdout(content: string): void {
+            if (typeof stdout === "function") {
+                stdout(content);
+            } else {
+                process.stdout.write(content);
+            }
+        }
+        
         try {
             while (data.length !== 0) {
                 const item: string = data.shift();
@@ -335,14 +344,14 @@ export class ProgramWrapper implements IProgramWrapper {
             }
 
             if (findOptionByLong<IOptionValued>("help", programOpts)) {
-                process.stdout.write(showHelp(new ProgramValued(program, [], programOpts, programArgs)));
-                process.stdout.write("\n");
+                showStdout(showHelp(new ProgramValued(program, [], programOpts, programArgs)));
+                showStdout("\n");
                 process.exit(0);
             }
 
             if (findOptionByLong<IOptionValued>("version", programOpts)) {
-                process.stdout.write("Version: " + program.getVersion() || "undefined");
-                process.stdout.write("\n");
+                showStdout("Version: " + program.getVersion() || "undefined");
+                showStdout("\n");
                 process.exit(0);
             }
 
@@ -380,8 +389,8 @@ export class ProgramWrapper implements IProgramWrapper {
             } else {
                 const commandAction: (args: {[key: string]: void}, opts: {[key: string]: void}) => void = command.getAction();
                 if (findOptionByLong<IOptionValued>("help", commandOpts)) {
-                    process.stdout.write(showHelp(new ProgramValued(program, [new CommandValued({declaration: command, opts: commandOpts, args: commandArgs})], programOpts, programArgs)));
-                    process.stdout.write("\n");
+                    showStdout(showHelp(new ProgramValued(program, [new CommandValued({declaration: command, opts: commandOpts, args: commandArgs})], programOpts, programArgs)));
+                    showStdout("\n");
                     process.exit(0);
                 } else if (!commandAction) {
                     let commandName: string = JSON.stringify(command.getName());
@@ -439,7 +448,7 @@ export class ProgramWrapper implements IProgramWrapper {
                 }
             }
         } catch (error) {
-            showError(error, showHelp(new ProgramValued(program, [], programOpts, programArgs)));
+            showError(error, showHelp(new ProgramValued(program, [], programOpts, programArgs)), stdout, stderr);
             process.exit(1);
         }
     }
