@@ -1,6 +1,6 @@
 {
   "name": "cli-program",
-  "version": "1.0.2",
+  "version": "1.0.6",
   "license": "MIT",
   "scripts": {
     "build": "rm -rf ./build && /usr/bin/env node ./node_modules/.bin/webpack",

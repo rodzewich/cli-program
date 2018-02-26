@@ -8,7 +8,8 @@ var fs = require("fs"),
     TARGET_DIRECTORY = path.join(SOURCE_DIRECTORY, "build"),
     PackagePlugin = require("./plugins/package"),
     DeclarationPlugin = require("./plugins/declaration"),
-    LicensePlugin = require("./plugins/license");
+    LicensePlugin = require("./plugins/license"),
+    ReadmePlugin = require("./plugins/readme");
 
 module.exports = {
     context: __dirname,
@@ -25,7 +26,8 @@ module.exports = {
         new UglifyJsPlugin(),
         new PackagePlugin(SOURCE_DIRECTORY, TARGET_DIRECTORY),
         new DeclarationPlugin(SOURCE_DIRECTORY, TARGET_DIRECTORY),
-        new LicensePlugin(SOURCE_DIRECTORY, TARGET_DIRECTORY)
+        new LicensePlugin(SOURCE_DIRECTORY, TARGET_DIRECTORY),
+        new ReadmePlugin(SOURCE_DIRECTORY, TARGET_DIRECTORY)
     ],
     externals : [NodeExternals()],
     module  : {

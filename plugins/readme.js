@@ -11,8 +11,8 @@ function LicensePlugin(source, target) {
 LicensePlugin.prototype.source = null;
 LicensePlugin.prototype.target = null;
 LicensePlugin.prototype.apply = function (compiler) {
-    var SOURCE_FILENAME = path.join(this.source, "LICENSE"),
-        TARGET_FILENAME = path.join(this.target, "LICENSE");
+    var SOURCE_FILENAME = path.join(this.source, "README.md"),
+        TARGET_FILENAME = path.join(this.target, "README.md");
     compiler.plugin("done", function () {
         fs.readFile(
             SOURCE_FILENAME,
