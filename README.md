@@ -75,7 +75,7 @@ or with special description:
 
 ```ts
 program
-  .version("0.0.1", "-v, --version", "My special description for version option");
+  .version("0.0.1", "-v, --version", "Special description for version option");
 ```
 
 
@@ -86,9 +86,7 @@ The version flags can be named anything, but the long option is required.
 You can attach options to a command.
 
 ```js
-#!/usr/bin/env node
-
-var program = require("commander");
+import {program} from "cli-program";
 
 program
   .command("rm <dir>")
@@ -105,10 +103,7 @@ A command"s options are validated when the command is used. Any unknown options 
 ## Specify the argument syntax
 
 ```js
-#!/usr/bin/env node
-
-var program = require("commander");
-
+import {program} from "cli-program";
 program
   .version("0.1.0")
   .arguments("<cmd> [env]")
@@ -131,9 +126,7 @@ Angled brackets (e.g. `<cmd>`) indicate required input. Square brackets (e.g. `[
 ## Git-style sub-commands
 
 ```js
-// file: ./examples/pm
-var program = require("commander");
-
+import {program} from "cli-program";
 program
   .version("0.1.0")
   .command("install [name]", "install one or more packages")
@@ -175,7 +168,7 @@ If the program is designed to be installed globally, make sure the executables h
 ## Examples
 
 ```js
-var program = require("commander");
+import {program} from "cli-program";
 
 program
   .version("0.1.0")
