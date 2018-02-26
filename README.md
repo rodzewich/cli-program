@@ -21,7 +21,7 @@ program
     .option("-P, --pineapple", "Add pineapple")
     .option("-b, --bbq-sauce", "Add bbq sauce")
     .option("-c, --cheese [type]", "Add the specified type of cheese [marble]", "marble")
-    .parse(function (args: any, opts: any) {
+    .parse((args: any, opts: any) => {
         console.log("you ordered a pizza with:");
         if (opts.peppers) {
             console.log("  - peppers");
@@ -45,7 +45,7 @@ import {program} from "cli-program";
 program
     .version("0.1.0")
     .option("-p, --password <string>", "Password to connect", null, ["no", "without"])
-    .parse(function (args: any, opts: any) {
+    .parse((args: any, opts: any) => {
         if (opts.password === false) {
             console.log("Without password!");
         } else {
@@ -85,34 +85,31 @@ The version flags can be named anything, but the long option is required.
 
 You can attach options to a command.
 
-```js
+```ts
 import {program} from "cli-program";
-
 program
-  .command("rm <dir>")
+  .command("rm <dir>") // comand with required argument
   .option("-r, --recursive", "Remove recursively")
-  .action(function (dir, cmd) {
-    console.log("remove " + dir + (cmd.recursive ? " recursively" : ""))
+  .action((args: any, opts: any) => {
+    console.log("remove " + args.dir + (opts.recursive ? " recursively" : ""))
   })
-
-program.parse(process.argv)
+program.parse()
 ```
 
-A command"s options are validated when the command is used. Any unknown options will be reported as an error. However, if an action-based command does not define an action, then the options are not validated.
+A command's options are validated when the command is used. Any unknown options will be reported as an error.
 
 ## Specify the argument syntax
 
-```js
+```ts
 import {program} from "cli-program";
 program
   .version("0.1.0")
   .arguments("<cmd> [env]")
-  .action(function (cmd, env) {
+  .action((args: any, opts: any) => {
      cmdValue = cmd;
      envValue = env;
   });
-
-program.parse(process.argv);
+program.parse();
 
 if (typeof cmdValue === "undefined") {
    console.error("no command given!");
@@ -204,14 +201,34 @@ program
 program
   .command("*")
   .action(function(env){
-    console.log("deploying "%s"", env);
+    console.log("deploying \"%s\"", env);
   });
 
-program.parse(process.argv);
+program.parse();
 ```
 
-More Demos can be found in the [examples](https://github.com/tj/cli-program/tree/master/examples) directory.
+More demos can be found in the [examples](https://github.com/tj/cli-program/tree/master/examples) directory.
 
 ## License
 
-MIT
+MIT License
+
+Copyright (c) 2018 Oleg Rodzewich
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.

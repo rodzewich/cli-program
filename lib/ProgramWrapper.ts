@@ -9,6 +9,7 @@ import {IOptionValued} from "./IOptionValued.ts";
 import {OptionValued} from "./OptionValued.ts";
 import {IOptionDeclaration} from "./IOptionDeclaration.ts";
 import {IArgumentDeclaration} from "./IArgumentDeclaration.ts";
+import {ArgumentDeclaration} from "./ArgumentDeclaration.ts";
 import {ArgumentValued} from "./ArgumentValued.ts";
 import {ProgramValued} from "./ProgramValued.ts";
 import {CommandValued} from "./CommandValued.ts";
@@ -76,6 +77,27 @@ export class ProgramWrapper implements IProgramWrapper {
             const instance: ICommandDeclaration = new CommandDeclaration(command);
             program.addCommand(instance);
             return new CommandWrapper(instance);
+        } catch (error) {
+            showError(error);
+            process.exit(1);
+        }
+    }
+
+    public arguments(args: string): IProgramWrapper {
+        try {
+            let matches: string[] = String(args || "")
+                .match(/^(<(?:[a-z][a-z0-9-]*)>|\[(?:[a-z][a-z0-9-]*)(?:\.\.\.)?\])((?:\s<(?:[a-z][a-z0-9-]*)>|\s\[(?:[a-z][a-z0-9-]*)(?:\.\.\.)?\])*)$/i);
+            if (matches === null) {
+                throw new Error("Invalid arguments format");
+            }
+            program.addArgument(new ArgumentDeclaration(matches[1]));
+            if (matches[2]) {
+                const other: string[] = matches[2].split(/\s+/);
+                for (const argument of other) {
+                    program.addArgument(new ArgumentDeclaration(argument));
+                }
+            }
+            return this;
         } catch (error) {
             showError(error);
             process.exit(1);
