@@ -9,7 +9,7 @@ import {IOptionDeclaration} from "./IOptionDeclaration.ts";
 import {ICommandDeclaration} from "./ICommandDeclaration.ts";
 
 export function showError(error: Error, help?: string, stdout?: (content: string) => void, stderr?: (content: string) => void): void {
-    const width: number = process.stdout.columns,
+    const width: number = process.stdout.columns || 80,
           lines: string[] = error.stack.split("\n");
 
     function showStdout(content: string): void {
@@ -21,8 +21,8 @@ export function showError(error: Error, help?: string, stdout?: (content: string
     }
 
     function showStderr(content: string): void {
-        if (typeof stdout === "function") {
-            stdout(content);
+        if (typeof stderr === "function") {
+            stderr(content);
         } else {
             process.stderr.write(content);
         }
@@ -50,7 +50,7 @@ export function showError(error: Error, help?: string, stdout?: (content: string
 }
 
 export function formatLine(line: string): string[] {
-    const width: number = process.stdout.columns;
+    const width: number = process.stdout.columns || 80;
     const result: string[] = [];
     while (line.length > width - 4) {
         result.push(line.substr(0, width - 4));
@@ -119,9 +119,9 @@ export function findOptionByLong<O extends IOption>(long: string, options: O[]):
     return null;
 }
 
-export function showHelp(program: IProgramValued): string {
-    const fileExtension: string = path.extname(process.argv[1]),
-          fileName: string  = path.basename(process.argv[1], fileExtension);
+export function showHelp(program: IProgramValued, name: string): string {
+    const fileExtension: string = path.extname(name),
+          fileName: string  = path.basename(name, fileExtension);
     let optionWidth: number = 0;
 
     function showName(): string[] {

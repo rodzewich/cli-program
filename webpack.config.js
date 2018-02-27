@@ -9,7 +9,8 @@ var fs = require("fs"),
     PackagePlugin = require("./plugins/package"),
     DeclarationPlugin = require("./plugins/declaration"),
     LicensePlugin = require("./plugins/license"),
-    ReadmePlugin = require("./plugins/readme");
+    ReadmePlugin = require("./plugins/readme"),
+    TestsPlugin = require("./plugins/tests");
 
 module.exports = {
     context: __dirname,
@@ -23,11 +24,15 @@ module.exports = {
     target  : 'node',
     devtool : "sourcemap",
     plugins : [
-        new UglifyJsPlugin(),
+        new UglifyJsPlugin({
+            parallel  : true,
+            sourceMap : true
+        }),
         new PackagePlugin(SOURCE_DIRECTORY, TARGET_DIRECTORY),
         new DeclarationPlugin(SOURCE_DIRECTORY, TARGET_DIRECTORY),
         new LicensePlugin(SOURCE_DIRECTORY, TARGET_DIRECTORY),
-        new ReadmePlugin(SOURCE_DIRECTORY, TARGET_DIRECTORY)
+        new ReadmePlugin(SOURCE_DIRECTORY, TARGET_DIRECTORY),
+        new TestsPlugin(SOURCE_DIRECTORY)
     ],
     externals : [NodeExternals()],
     module  : {

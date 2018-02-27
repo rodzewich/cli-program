@@ -11,53 +11,53 @@ export class CommandWrapper implements ICommandWrapper {
         this._declaration = declaration;
     }
 
-    public alias(alias: string): ICommandWrapper {
+    public alias(alias: string, exit?: (code?: number) => void): ICommandWrapper {
         try {
             this._declaration.setAlias(alias);
             return this;
         } catch (error) {
             showError(error);
-            process.exit(1);
+            (exit || process.exit)(1);
         }
     }
 
-    public usage(usage: string): ICommandWrapper {
+    public usage(usage: string, exit?: (code?: number) => void): ICommandWrapper {
         try {
             this._declaration.setUsage(usage);
             return this;
         } catch (error) {
             showError(error);
-            process.exit(1);
+            (exit || process.exit)(1);
         }
     }
 
-    public option(flags: string, description?: string, defaultValue?: any, negativePrefixes?: string[], preparationFunction?: (value: any) => any): ICommandWrapper {
+    public option(flags: string, description?: string, defaultValue?: any, negativePrefixes?: string[], preparationFunction?: (value: any) => any, exit?: (code?: number) => void): ICommandWrapper {
         try {
             this._declaration.addOption(new OptionDeclaration({flags, description, defaultValue, negativePrefixes, preparationFunction}));
             return this;
         } catch (error) {
             showError(error);
-            process.exit(1);
+            (exit || process.exit)(1);
         }
     }
 
-    public description(description: string): ICommandWrapper {
+    public description(description: string, exit?: (code?: number) => void): ICommandWrapper {
         try {
             this._declaration.setDescription(description);
             return this;
         } catch (error) {
             showError(error);
-            process.exit(1);
+            (exit || process.exit)(1);
         }
     }
 
-    public action(action: (args: {[key: string]: any}, opts: {[key: string]: any}) => void): ICommandWrapper {
+    public action(action: (args: {[key: string]: any}, opts: {[key: string]: any}) => void, exit?: (code?: number) => void): ICommandWrapper {
         try {
             this._declaration.setAction(action);
             return this;
         } catch (error) {
             showError(error);
-            process.exit(1);
+            (exit || process.exit)(1);
         }
     }
 
