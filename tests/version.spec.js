@@ -3,11 +3,12 @@ var fs = require("fs"),
     util = require("util"),
     expect = require("chai").expect;
 require("./sourcemap");
-var factory = require("./factory");
+var ProgramWrapper = require("../build/index").ProgramWrapper,
+    removeProgramDeclaration = require("../build/index").removeProgramDeclaration;
 
 describe("Program version", function () {
     it("Show version by regular option \"--version\"", function () {
-        var program = factory(),
+        var program = new ProgramWrapper(),
             content = [];
         program.version("0.0.1");
         program.parse(
@@ -22,11 +23,12 @@ describe("Program version", function () {
             function (code) {
                 expect(code).to.equal(0);
                 expect(content.join("")).to.equal("Version: 0.0.1\n");
+                removeProgramDeclaration(program);
             }
         );
     });
     it("Show version by regular option \"-V\"", function () {
-        var program = factory(),
+        var program = new ProgramWrapper(),
             content = [];
         program.version("0.0.1");
         program.parse(
@@ -41,11 +43,12 @@ describe("Program version", function () {
             function (code) {
                 expect(code).to.equal(0);
                 expect(content.join("")).to.equal("Version: 0.0.1\n");
+                removeProgramDeclaration(program);
             }
         );
     });
     it("Show version by custom flags \"--my-version\"", function () {
-        var program = factory(),
+        var program = new ProgramWrapper(),
             content = [];
         program.version("0.0.1", "--my-version");
         program.parse(
@@ -60,6 +63,7 @@ describe("Program version", function () {
             function (code) {
                 expect(code).to.equal(0);
                 expect(content.join("")).to.equal("Version: 0.0.1\n");
+                removeProgramDeclaration(program);
             }
         );
     });

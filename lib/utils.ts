@@ -7,6 +7,91 @@ import {IProgramValued} from "./IProgramValued.ts";
 import {ICommandValued} from "./ICommandValued.ts";
 import {IOptionDeclaration} from "./IOptionDeclaration.ts";
 import {ICommandDeclaration} from "./ICommandDeclaration.ts";
+import {IProgramDeclaration} from "./IProgramDeclaration.ts";
+import {IProgramWrapper} from "./IProgramWrapper.ts";
+import {ICommandWrapper} from "./ICommandWrapper";
+
+const programs: [IProgramWrapper, IProgramDeclaration][] = [],
+      commands: [ICommandWrapper, ICommandDeclaration][] = [],
+      connects: [IProgramWrapper, ICommandWrapper[]][] = [];
+
+export function addCommandToProgram(program: IProgramWrapper, command: ICommandWrapper): void {
+    const foundCommands: ICommandWrapper[] = connects
+            .filter((item: [IProgramWrapper, ICommandWrapper[]]) => item.indexOf(program) === 0)
+            .map((item: [IProgramWrapper, ICommandWrapper[]]) => item[1])[0] || null;
+    if (foundCommands) {
+        foundCommands.push(command);
+    }
+}
+
+export function getCommandsInProgram(program: IProgramWrapper): ICommandWrapper[] {
+    return connects
+            .filter((item: [IProgramWrapper, ICommandWrapper[]]) => item.indexOf(program) === 0)
+            .map((item: [IProgramWrapper, ICommandWrapper[]]) => item[1].slice())[0] || null;
+}
+
+export function removeCommandsInProgram(program: IProgramWrapper): void {
+    const foundCommand: [IProgramWrapper, ICommandWrapper[]] = connects
+            .filter((item: [IProgramWrapper, ICommandWrapper[]]) => item.indexOf(program) === 0)[0] || null;
+    if (foundCommand) {
+        connects.splice(connects.indexOf(foundCommand), 1);
+    }
+}
+
+export function setProgramDeclaration(program: IProgramWrapper, declaration: IProgramDeclaration): void {
+    const foundProgram: [IProgramWrapper, IProgramDeclaration] = programs
+            .filter((item: [IProgramWrapper, IProgramDeclaration]) => item.indexOf(program) === 0)[0] || null;
+    if (foundProgram) {
+        foundProgram[1] = declaration;
+    } else {
+        programs.push([program, declaration]);
+    }
+}
+
+export function getProgramDeclaration(program: IProgramWrapper): IProgramDeclaration {
+    return programs
+            .filter((item: [IProgramWrapper, IProgramDeclaration]) => item.indexOf(program) === 0)
+            .map((item: [IProgramWrapper, IProgramDeclaration]) => item[1])[0] || null;
+}
+
+export function removeProgramDeclaration(program: IProgramWrapper): void {
+    const foundProgram: [IProgramWrapper, IProgramDeclaration] = programs
+            .filter((item: [IProgramWrapper, IProgramDeclaration]) => item.indexOf(program) === 0)[0] || null;
+    if (foundProgram) {
+        programs.splice(programs.indexOf(foundProgram), 1);
+        const commands: ICommandWrapper[] = getCommandsInProgram(foundProgram[0]);
+        if (commands) {
+            for (const command of commands) {
+                removeCommandDeclaration(command);
+            }
+        }
+        removeCommandsInProgram(foundProgram[0]);
+    }
+}
+
+export function setCommandDeclaration(command: ICommandWrapper, declaration: ICommandDeclaration): void {
+    const foundCommand: [ICommandWrapper, ICommandDeclaration] = commands
+            .filter((item: [ICommandWrapper, ICommandDeclaration]) => item.indexOf(command) === 0)[0] || null;
+    if (foundCommand) {
+        foundCommand[1] = declaration;
+    } else {
+        commands.push([command, declaration]);
+    }
+}
+
+export function getCommandDeclaration(command: ICommandWrapper): ICommandDeclaration {
+    return commands
+            .filter((item: [ICommandWrapper, ICommandDeclaration]) => item.indexOf(command) === 0)
+            .map((item: [ICommandWrapper, ICommandDeclaration]) => item[1])[0] || null;
+}
+
+export function removeCommandDeclaration(command: ICommandWrapper): void {
+    const foundCommand: [ICommandWrapper, ICommandDeclaration] = commands
+            .filter((item: [ICommandWrapper, ICommandDeclaration]) => item.indexOf(command) === 0)[0] || null;
+    if (foundCommand) {
+        commands.splice(commands.indexOf(foundCommand), 1);
+    }
+}
 
 export function showError(error: Error, help?: string, stdout?: (content: string) => void, stderr?: (content: string) => void): void {
     const width: number = process.stdout.columns || 80,

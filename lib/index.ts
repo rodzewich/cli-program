@@ -22,3 +22,4 @@ export {ICommandWrapper} from "./ICommandWrapper.ts";
 export {CommandWrapper} from "./CommandWrapper.ts";
 export {IProgramWrapper} from "./IProgramWrapper.ts";
 export {ProgramWrapper} from "./ProgramWrapper.ts";
+export * from "./utils.ts";
