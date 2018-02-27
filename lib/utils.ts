@@ -11,9 +11,102 @@ import {IProgramDeclaration} from "./IProgramDeclaration.ts";
 import {IProgramWrapper} from "./IProgramWrapper.ts";
 import {ICommandWrapper} from "./ICommandWrapper";
 
-const programs: [IProgramWrapper, IProgramDeclaration][] = [],
-      commands: [ICommandWrapper, ICommandDeclaration][] = [],
-      connects: [IProgramWrapper, ICommandWrapper[]][] = [];
+const programs: [IProgramWrapper, IProgramDeclaration][]  = [],
+      commands: [ICommandWrapper, ICommandDeclaration][]  = [],
+      connects: [IProgramWrapper, ICommandWrapper[]][]    = [],
+      stdout: [IProgramWrapper, (text: string) => void][] = [],
+      stderr: [IProgramWrapper, (text: string) => void][] = [],
+      exits: [IProgramWrapper, (code: number) => void][]  = [];
+
+export function setExitHandlerForProgram(program: IProgramWrapper, handler: (code: number) => void): void {
+    const foundHandler: [IProgramWrapper, (code: number) => void] = exits
+            .filter((item: [IProgramWrapper, (code: number) => void]) => item.indexOf(program) === 0)[0] || null;
+    if (foundHandler) {
+        foundHandler[1] = handler;
+    } else {
+        exits.push([program, handler]);
+    }
+}
+
+export function getExitHandlerForProgram(program: IProgramWrapper): (code: number) => void {
+    return exits
+            .filter((item: [IProgramWrapper, (code: number) => void]) => item.indexOf(program) === 0)
+            .map((item: [IProgramWrapper, (code: number) => void]) => item[1])[0] || function (code: number): void {process.exit(code)};
+}
+
+export function getExitHandlerForCommand(command: ICommandWrapper): (code: number) => void {
+    return getExitHandlerForProgram(connects
+            .filter((item: [IProgramWrapper, ICommandWrapper[]]) => item[1].indexOf(command) !== -1)
+            .map((item: [IProgramWrapper, ICommandWrapper[]]) => item[0])[0] || null);
+}
+
+function removeExitHandlerForProgram(program: IProgramWrapper): void {
+    const foundHandler: [IProgramWrapper, (code: number) => void] = exits
+            .filter((item: [IProgramWrapper, (code: number) => void]) => item.indexOf(program) === 0)[0] || null;
+    if (foundHandler) {
+        exits.splice(exits.indexOf(foundHandler), 1);
+    }
+}
+
+export function setStdoutHandlerForProgram(program: IProgramWrapper, handler: (text: string) => void): void {
+    const foundHandler: [IProgramWrapper, (text: string) => void] = stdout
+            .filter((item: [IProgramWrapper, (text: string) => void]) => item.indexOf(program) === 0)[0] || null;
+    if (foundHandler) {
+        foundHandler[1] = handler;
+    } else {
+        stdout.push([program, handler]);
+    }
+}
+
+export function getStdoutHandlerForProgram(program: IProgramWrapper): (text: string) => void {
+    return stdout
+            .filter((item: [IProgramWrapper, (text: string) => void]) => item.indexOf(program) === 0)
+            .map((item: [IProgramWrapper, (text: string) => void]) => item[1])[0] || function (text: string): void {process.stdout.write(text)};
+}
+
+export function getStdoutHandlerForCommand(command: ICommandWrapper): (text: string) => void {
+    return getStdoutHandlerForProgram(connects
+            .filter((item: [IProgramWrapper, ICommandWrapper[]]) => item[1].indexOf(command) !== -1)
+            .map((item: [IProgramWrapper, ICommandWrapper[]]) => item[0])[0] || null);
+}
+
+function removeStdoutHandlerForProgram(program: IProgramWrapper): void {
+    const foundHandler: [IProgramWrapper, (text: string) => void] = stdout
+            .filter((item: [IProgramWrapper, (text: string) => void]) => item.indexOf(program) === 0)[0] || null;
+    if (foundHandler) {
+        stdout.splice(stdout.indexOf(foundHandler), 1);
+    }
+}
+
+export function setStderrHandlerForProgram(program: IProgramWrapper, handler: (text: string) => void): void {
+    const foundHandler: [IProgramWrapper, (text: string) => void] = stderr
+            .filter((item: [IProgramWrapper, (text: string) => void]) => item.indexOf(program) === 0)[0] || null;
+    if (foundHandler) {
+        foundHandler[1] = handler;
+    } else {
+        stderr.push([program, handler]);
+    }
+}
+
+export function getStderrHandlerForProgram(program: IProgramWrapper): (text: string) => void {
+    return stderr
+            .filter((item: [IProgramWrapper, (text: string) => void]) => item.indexOf(program) === 0)
+            .map((item: [IProgramWrapper, (text: string) => void]) => item[1])[0] || function (text: string): void {process.stderr.write(text)};
+}
+
+export function getStderrHandlerForCommand(command: ICommandWrapper): (text: string) => void {
+    return getStderrHandlerForProgram(connects
+            .filter((item: [IProgramWrapper, ICommandWrapper[]]) => item[1].indexOf(command) !== 1)
+            .map((item: [IProgramWrapper, ICommandWrapper[]]) => item[0])[0] || null);
+}
+
+function removeStderrHandlerForProgram(program: IProgramWrapper): void {
+    const foundHandler: [IProgramWrapper, (text: string) => void] = stderr
+        .filter((item: [IProgramWrapper, (text: string) => void]) => item.indexOf(program) === 0)[0] || null;
+    if (foundHandler) {
+        stderr.splice(stderr.indexOf(foundHandler), 1);
+    }
+}
 
 export function addCommandToProgram(program: IProgramWrapper, command: ICommandWrapper): void {
     const foundCommands: ICommandWrapper[] = connects
@@ -65,6 +158,9 @@ export function removeProgramDeclaration(program: IProgramWrapper): void {
                 removeCommandDeclaration(command);
             }
         }
+        removeStdoutHandlerForProgram(foundProgram[0]);
+        removeStderrHandlerForProgram(foundProgram[0]);
+        removeExitHandlerForProgram(foundProgram[0]);
         removeCommandsInProgram(foundProgram[0]);
     }
 }
@@ -93,45 +189,28 @@ export function removeCommandDeclaration(command: ICommandWrapper): void {
     }
 }
 
-export function showError(error: Error, help?: string, stdout?: (content: string) => void, stderr?: (content: string) => void): void {
+export function showError(error: Error, help: string, stdout: (text: string) => void, stderr: (text: string) => void): void {
     const width: number = process.stdout.columns || 80,
           lines: string[] = error.stack.split("\n");
-
-    function showStdout(content: string): void {
-        if (typeof stdout === "function") {
-            stdout(content);
-        } else {
-            process.stdout.write(content);
-        }
-    }
-
-    function showStderr(content: string): void {
-        if (typeof stderr === "function") {
-            stderr(content);
-        } else {
-            process.stderr.write(content);
-        }
-    }
-
     if (help) {
-        showStdout(help);
+        stdout(help);
     }
-    showStderr("\n");
-    showStderr(" " + colors.bgRed(new Array(width - 1).join(" ")) + "\n");
+    stderr("\n");
+    stderr(" " + colors.bgRed(new Array(width - 1).join(" ")) + "\n");
     for (const [index, line] of lines.entries()) {
         const formattedLine: string[] = formatLine(line);
         if (index === 0) {
             for (const line of formattedLine) {
-                showStderr(" " + colors.bgRed(colors.yellow(colors.bold(" " + line + " "))) + "\n");
+                stderr(" " + colors.bgRed(colors.yellow(colors.bold(" " + line + " "))) + "\n");
             }
         } else {
             for (const line of formattedLine) {
-                showStderr(" " + colors.bgRed(colors.white(" " + line + " ")) + "\n");
+                stderr(" " + colors.bgRed(colors.white(" " + line + " ")) + "\n");
             }
         }
     }
-    showStderr(" " + colors.bgRed(new Array(width - 1).join(" ")) + "\n");
-    showStderr("\n");
+    stderr(" " + colors.bgRed(new Array(width - 1).join(" ")) + "\n");
+    stderr("\n");
 }
 
 export function formatLine(line: string): string[] {

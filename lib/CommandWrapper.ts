@@ -1,7 +1,7 @@
 import {ICommandWrapper} from "./ICommandWrapper.ts";
 import {ICommandDeclaration} from "./ICommandDeclaration.ts";
 import {OptionDeclaration} from "./OptionDeclaration.ts";
-import {showError, setCommandDeclaration, getCommandDeclaration} from "./utils.ts";
+import {showError, setCommandDeclaration, getCommandDeclaration, getStdoutHandlerForCommand, getStderrHandlerForCommand, getExitHandlerForCommand} from "./utils.ts";
 
 /**
  * User friendly command wrapper class.
@@ -21,7 +21,7 @@ export class CommandWrapper implements ICommandWrapper {
      * @param alias Alias name.
      * @returns {CommandWrapper}
      */
-    public alias(alias: string, exit?: (code?: number) => void): ICommandWrapper {
+    public alias(alias: string): ICommandWrapper {
         try {
             const declaration: ICommandDeclaration = getCommandDeclaration(this);
             if (!declaration) {
@@ -30,8 +30,8 @@ export class CommandWrapper implements ICommandWrapper {
             declaration.setAlias(alias);
             return this;
         } catch (error) {
-            showError(error);
-            (exit || process.exit)(1);
+            showError(error, null, getStdoutHandlerForCommand(this), getStderrHandlerForCommand(this));
+            getExitHandlerForCommand(this)(1);
         }
     }
 
@@ -40,7 +40,7 @@ export class CommandWrapper implements ICommandWrapper {
      * @param usage Usage format.
      * @returns {CommandWrapper}
      */
-    public usage(usage: string, exit?: (code?: number) => void): ICommandWrapper {
+    public usage(usage: string): ICommandWrapper {
         try {
             const declaration: ICommandDeclaration = getCommandDeclaration(this);
             if (!declaration) {
@@ -49,8 +49,8 @@ export class CommandWrapper implements ICommandWrapper {
             declaration.setUsage(usage);
             return this;
         } catch (error) {
-            showError(error);
-            (exit || process.exit)(1);
+            showError(error, null, getStdoutHandlerForCommand(this), getStderrHandlerForCommand(this));
+            getExitHandlerForCommand(this)(1);
         }
     }
 
@@ -63,7 +63,7 @@ export class CommandWrapper implements ICommandWrapper {
      * @param preparationFunction Function for preparation option value.
      * @returns {CommandWrapper}
      */
-    public option(flags: string, description?: string, defaultValue?: any, negativePrefixes?: string[], preparationFunction?: (value: any) => any, exit?: (code?: number) => void): ICommandWrapper {
+    public option(flags: string, description?: string, defaultValue?: any, negativePrefixes?: string[], preparationFunction?: (value: any) => any): ICommandWrapper {
         try {
             const declaration: ICommandDeclaration = getCommandDeclaration(this);
             if (!declaration) {
@@ -72,8 +72,8 @@ export class CommandWrapper implements ICommandWrapper {
             declaration.addOption(new OptionDeclaration({flags, description, defaultValue, negativePrefixes, preparationFunction}));
             return this;
         } catch (error) {
-            showError(error);
-            (exit || process.exit)(1);
+            showError(error, null, getStdoutHandlerForCommand(this), getStderrHandlerForCommand(this));
+            getExitHandlerForCommand(this)(1);
         }
     }
 
@@ -82,7 +82,7 @@ export class CommandWrapper implements ICommandWrapper {
      * @param description Command description.
      * @returns {CommandWrapper}
      */
-    public description(description: string, exit?: (code?: number) => void): ICommandWrapper {
+    public description(description: string): ICommandWrapper {
         try {
             const declaration: ICommandDeclaration = getCommandDeclaration(this);
             if (!declaration) {
@@ -91,8 +91,8 @@ export class CommandWrapper implements ICommandWrapper {
             declaration.setDescription(description);
             return this;
         } catch (error) {
-            showError(error);
-            (exit || process.exit)(1);
+            showError(error, null, getStdoutHandlerForCommand(this), getStderrHandlerForCommand(this));
+            getExitHandlerForCommand(this)(1);
         }
     }
 
@@ -101,7 +101,7 @@ export class CommandWrapper implements ICommandWrapper {
      * @param action Command handler.
      * @returns {CommandWrapper}
      */
-    public action(action: (args: {[key: string]: any}, opts: {[key: string]: any}) => void, exit?: (code?: number) => void): ICommandWrapper {
+    public action(action: (args: {[key: string]: any}, opts: {[key: string]: any}) => void): ICommandWrapper {
         try {
             const declaration: ICommandDeclaration = getCommandDeclaration(this);
             if (!declaration) {
@@ -110,8 +110,8 @@ export class CommandWrapper implements ICommandWrapper {
             declaration.setAction(action);
             return this;
         } catch (error) {
-            showError(error);
-            (exit || process.exit)(1);
+            showError(error, null, getStdoutHandlerForCommand(this), getStderrHandlerForCommand(this));
+            getExitHandlerForCommand(this)(1);
         }
     }
 

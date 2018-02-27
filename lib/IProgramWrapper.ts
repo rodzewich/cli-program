@@ -56,7 +56,8 @@ export interface IProgramWrapper {
     /**
      * Start parsing process.
      * @param action Program default handler. Not needed if any command was declared.
+     * @param argv Command line arguments.
      */
-    parse(action?: (args: {[key: string]: any}, opts: {[key: string]: any}) => void): void;
+    parse(action?: (args: {[key: string]: any}, opts: {[key: string]: any}) => void, argv?: string[]): void;
 
 }

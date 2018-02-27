@@ -15,7 +15,7 @@ import {ProgramValued} from "./ProgramValued.ts";
 import {CommandValued} from "./CommandValued.ts";
 import {ProgramDeclaration} from "./ProgramDeclaration.ts";
 import {IProgramDeclaration} from "./IProgramDeclaration.ts";
-import {setProgramDeclaration, getProgramDeclaration, addCommandToProgram, showError,
+import {setProgramDeclaration, getProgramDeclaration, addCommandToProgram, getStdoutHandlerForProgram, getStderrHandlerForProgram, getExitHandlerForProgram, showError,
     getCountOfRequireArguments, findArgumentByIndex, findCommandByName,
     findCommandByAlias, findOptionByShort, findOptionByLong, showHelp} from "./utils.ts";
 
@@ -41,13 +41,17 @@ export class ProgramWrapper implements IProgramWrapper {
      * @param name Program name.
      * @returns {ProgramWrapper}
      */
-    public name(name: string, exit?: (code?: number) => void): IProgramWrapper {
+    public name(name: string): IProgramWrapper {
         try {
-            getProgramDeclaration(this).setName(name);
+            const declaration: IProgramDeclaration = getProgramDeclaration(this);
+            if (!declaration) {
+                throw new Error("Program declaration was removed!");
+            }
+            declaration.setName(name);
             return this;
         } catch (error) {
-            showError(error);
-            (exit || process.exit)(1);
+            showError(error, null, getStdoutHandlerForProgram(this), getStderrHandlerForProgram(this));
+            getExitHandlerForProgram(this)(1);
         }
     }
 
@@ -58,17 +62,21 @@ export class ProgramWrapper implements IProgramWrapper {
      * @param description Flags description.
      * @returns {ProgramWrapper}
      */
-    public version(version: string, flags?: string, description?: string, exit?: (code?: number) => void): IProgramWrapper {
+    public version(version: string, flags?: string, description?: string): IProgramWrapper {
         try {
-            getProgramDeclaration(this).setVersion(version);
-            getProgramDeclaration(this).addOption(new OptionDeclaration({
+            const declaration: IProgramDeclaration = getProgramDeclaration(this);
+            if (!declaration) {
+                throw new Error("Program declaration was removed!");
+            }
+            declaration.setVersion(version);
+            declaration.addOption(new OptionDeclaration({
                 flags : flags || "-V, --version",
                 description : description || "Show version."
             }));
             return this;
         } catch (error) {
-            showError(error);
-            (exit || process.exit)(1);
+            showError(error, null, getStdoutHandlerForProgram(this), getStderrHandlerForProgram(this));
+            getExitHandlerForProgram(this)(1);
         }
     }
 
@@ -77,13 +85,17 @@ export class ProgramWrapper implements IProgramWrapper {
      * @param description Program description.
      * @returns {ProgramWrapper}
      */
-    public description(description: string, exit?: (code?: number) => void): IProgramWrapper {
+    public description(description: string): IProgramWrapper {
         try {
-            getProgramDeclaration(this).setDescription(description);
+            const declaration: IProgramDeclaration = getProgramDeclaration(this);
+            if (!declaration) {
+                throw new Error("Program declaration was removed!");
+            }
+            declaration.setDescription(description);
             return this;
         } catch (error) {
-            showError(error);
-            (exit || process.exit)(1);
+            showError(error, null, getStdoutHandlerForProgram(this), getStderrHandlerForProgram(this));
+            getExitHandlerForProgram(this)(1);
         }
     }
 
@@ -92,13 +104,17 @@ export class ProgramWrapper implements IProgramWrapper {
      * @param usage Usage format.
      * @returns {ProgramWrapper}
      */
-    public usage(usage: string, exit?: (code?: number) => void): IProgramWrapper {
+    public usage(usage: string): IProgramWrapper {
         try {
-            getProgramDeclaration(this).setUsage(usage);
+            const declaration: IProgramDeclaration = getProgramDeclaration(this);
+            if (!declaration) {
+                throw new Error("Program declaration was removed!");
+            }
+            declaration.setUsage(usage);
             return this;
         } catch (error) {
-            showError(error);
-            (exit || process.exit)(1);
+            showError(error, null, getStdoutHandlerForProgram(this), getStderrHandlerForProgram(this));
+            getExitHandlerForProgram(this)(1);
         }
     }
 
@@ -111,13 +127,17 @@ export class ProgramWrapper implements IProgramWrapper {
      * @param preparationFunction Function for preparation option value.
      * @returns {ProgramWrapper}
      */
-    public option(flags: string, description?: string, defaultValue?: any, negativePrefixes?: string[], preparationFunction?: (value: any) => any, exit?: (code?: number) => void): IProgramWrapper {
+    public option(flags: string, description?: string, defaultValue?: any, negativePrefixes?: string[], preparationFunction?: (value: any) => any): IProgramWrapper {
         try {
-            getProgramDeclaration(this).addOption(new OptionDeclaration({flags, description, defaultValue, negativePrefixes, preparationFunction}));
+            const declaration: IProgramDeclaration = getProgramDeclaration(this);
+            if (!declaration) {
+                throw new Error("Program declaration was removed!");
+            }
+            declaration.addOption(new OptionDeclaration({flags, description, defaultValue, negativePrefixes, preparationFunction}));
             return this;
         } catch (error) {
-            showError(error);
-            (exit || process.exit)(1);
+            showError(error, null, getStdoutHandlerForProgram(this), getStderrHandlerForProgram(this));
+            getExitHandlerForProgram(this)(1);
         }
     }
 
@@ -126,17 +146,20 @@ export class ProgramWrapper implements IProgramWrapper {
      * @param command Command name.
      * @returns {ICommandWrapper}
      */
-    public command(command: string, exit?: (code?: number) => void): ICommandWrapper {
+    public command(command: string): ICommandWrapper {
         try {
-            const program: IProgramDeclaration  = getProgramDeclaration(this),
+            const declaration: IProgramDeclaration = getProgramDeclaration(this),
                   instance: ICommandDeclaration = new CommandDeclaration(command),
                   wrapper: ICommandWrapper      = new CommandWrapper(instance);
-            program.addCommand(instance);
+            if (!declaration) {
+                throw new Error("Program declaration was removed!");
+            }
+            declaration.addCommand(instance);
             addCommandToProgram(this, wrapper);
             return wrapper;
         } catch (error) {
-            showError(error);
-            (exit || process.exit)(1);
+            showError(error, null, getStdoutHandlerForProgram(this), getStderrHandlerForProgram(this));
+            getExitHandlerForProgram(this)(1);
         }
     }
 
@@ -145,32 +168,37 @@ export class ProgramWrapper implements IProgramWrapper {
      * @param args Program arguments.
      * @returns {ProgramWrapper}
      */
-    public arguments(args: string, exit?: (code?: number) => void): IProgramWrapper {
+    public arguments(args: string): IProgramWrapper {
         try {
-            let matches: string[] = String(args || "")
-                .match(/^(<(?:[a-z][a-z0-9-]*)>|\[(?:[a-z][a-z0-9-]*)(?:\.\.\.)?\])((?:\s<(?:[a-z][a-z0-9-]*)>|\s\[(?:[a-z][a-z0-9-]*)(?:\.\.\.)?\])*)$/i);
+            const declaration: IProgramDeclaration = getProgramDeclaration(this),
+                  matches: string[] = String(args || "")
+                      .match(/^(<(?:[a-z][a-z0-9-]*)>|\[(?:[a-z][a-z0-9-]*)(?:\.\.\.)?\])((?:\s<(?:[a-z][a-z0-9-]*)>|\s\[(?:[a-z][a-z0-9-]*)(?:\.\.\.)?\])*)$/i);
             if (matches === null) {
                 throw new Error("Invalid arguments format");
             }
-            getProgramDeclaration(this).addArgument(new ArgumentDeclaration(matches[1]));
+            if (!declaration) {
+                throw new Error("Program declaration was removed!");
+            }
+            declaration.addArgument(new ArgumentDeclaration(matches[1]));
             if (matches[2]) {
                 const other: string[] = matches[2].split(/\s+/);
                 for (const argument of other) {
-                    getProgramDeclaration(this).addArgument(new ArgumentDeclaration(argument));
+                    declaration.addArgument(new ArgumentDeclaration(argument));
                 }
             }
             return this;
         } catch (error) {
-            showError(error);
-            (exit || process.exit)(1);
+            showError(error, null, getStdoutHandlerForProgram(this), getStderrHandlerForProgram(this));
+            getExitHandlerForProgram(this)(1);
         }
     }
 
     /**
      * Start parsing process.
      * @param action Program default handler. Not needed if any command was declared.
+     * @param argv Command line arguments.
      */
-    public parse(action?: (args: {[key: string]: any}, opts: {[key: string]: any}) => void, argv?: string[], stdout?: (content: string) => void, stderr?: (content: string) => void, exit?: (code?: number) => void): void {
+    public parse(action?: (args: {[key: string]: any}, opts: {[key: string]: any}) => void, argv?: string[]): void {
         let command: ICommandDeclaration;
         const data: string[] = (argv || process.argv).slice(2),
               name: string = (argv || process.argv)[1],
@@ -178,16 +206,9 @@ export class ProgramWrapper implements IProgramWrapper {
               programArgs: IArgumentValued[] = [],
               programOpts: IOptionValued[]   = [],
               commandArgs: IArgumentValued[] = [],
-              commandOpts: IOptionValued[]   = [];
+              commandOpts: IOptionValued[]   = [],
+              stdout: (text: string) => void = getStdoutHandlerForProgram(this);
 
-        function showStdout(content: string): void {
-            if (typeof stdout === "function") {
-                stdout(content);
-            } else {
-                process.stdout.write(content);
-            }
-        }
-        
         try {
             while (data.length !== 0) {
                 const item: string = data.shift();
@@ -414,23 +435,15 @@ export class ProgramWrapper implements IProgramWrapper {
             }
 
             if (findOptionByLong<IOptionValued>("help", programOpts)) {
-                showStdout(showHelp(new ProgramValued(program, [], programOpts, programArgs), name));
-                showStdout("\n");
-                if (typeof exit === "function") {
-                    return exit(0);
-                } else {
-                    process.exit(0);
-                }
+                stdout(showHelp(new ProgramValued(program, [], programOpts, programArgs), name));
+                stdout("\n");
+                return getExitHandlerForProgram(this)(0);
             }
 
             if (findOptionByLong<IOptionValued>("version", programOpts)) {
-                showStdout("Version: " + program.getVersion() || "undefined");
-                showStdout("\n");
-                if (typeof exit === "function") {
-                    return exit(0);
-                } else {
-                    process.exit(0);
-                }
+                stdout("Version: " + program.getVersion() || "undefined");
+                stdout("\n");
+                return getExitHandlerForProgram(this)(0);
             }
 
             if (!command && program.getCommands().length !== 0) {
@@ -467,13 +480,9 @@ export class ProgramWrapper implements IProgramWrapper {
             } else {
                 const commandAction: (args: {[key: string]: void}, opts: {[key: string]: void}) => void = command.getAction();
                 if (findOptionByLong<IOptionValued>("help", commandOpts)) {
-                    showStdout(showHelp(new ProgramValued(program, [new CommandValued({declaration: command, opts: commandOpts, args: commandArgs})], programOpts, programArgs), name));
-                    showStdout("\n");
-                    if (typeof exit === "function") {
-                        return exit(0);
-                    } else {
-                        process.exit(0);
-                    }
+                    stdout(showHelp(new ProgramValued(program, [new CommandValued({declaration: command, opts: commandOpts, args: commandArgs})], programOpts, programArgs), name));
+                    stdout("\n");
+                    return getExitHandlerForProgram(this)(0);
                 } else if (!commandAction) {
                     let commandName: string = JSON.stringify(command.getName());
                     if (command.getAlias()) {
@@ -530,12 +539,8 @@ export class ProgramWrapper implements IProgramWrapper {
                 }
             }
         } catch (error) {
-            showError(error, showHelp(new ProgramValued(program, [], programOpts, programArgs), name), stdout, stderr);
-            if (typeof exit === "function") {
-                return exit(1);
-            } else {
-                process.exit(1);
-            }
+            showError(error, showHelp(new ProgramValued(program, [], programOpts, programArgs), name), getStdoutHandlerForProgram(this), getStderrHandlerForProgram(this));
+            return getExitHandlerForProgram(this)(1);
         }
     }
 
