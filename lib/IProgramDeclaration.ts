@@ -6,7 +6,7 @@ import {ICommandDeclaration} from "./ICommandDeclaration.ts";
 export interface IProgramDeclaration extends IProgram<IOptionDeclaration, IArgumentDeclaration, ICommandDeclaration> {
     setName(name: string): void;
     setDescription(description: string): void;
-    setVersion(version: string): void;
+    setVersion(version: string, flags?: string, description?: string): void;
     setUsage(usage: string): void;
     setOptions(options: IOptionDeclaration[]): void;
     addOption(option: IOptionDeclaration): void;

@@ -13,6 +13,8 @@ export class ProgramDeclaration implements IProgramDeclaration {
 
     private _version: string = null;
 
+    private _versionOption: IOptionDeclaration = null;
+
     private _usage: string = null;
 
     private _options: IOptionDeclaration[] = [];
@@ -49,12 +51,21 @@ export class ProgramDeclaration implements IProgramDeclaration {
         return this._description;
     }
 
-    setVersion(version: string): void {
+    setVersion(version: string, flags?: string, description?: string): void {
         this._version = version;
+        this._versionOption = new OptionDeclaration({
+            flags : flags || "-V, --version",
+            description : description || "Show version."
+        });
+        this.addOption(this._versionOption);
     }
 
     getVersion(): string {
         return this._version
+    }
+    
+    getVersionOption(): IOptionDeclaration {
+        return this._versionOption || null;
     }
 
     setUsage(usage: string): void {

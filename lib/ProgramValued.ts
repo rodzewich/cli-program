@@ -3,6 +3,7 @@ import {IProgramDeclaration} from "./IProgramDeclaration.ts";
 import {IOptionValued} from "./IOptionValued.ts";
 import {ICommandValued} from "./ICommandValued.ts";
 import {IArgumentValued} from "./IArgumentValued.ts";
+import {IOptionDeclaration} from "./IOptionDeclaration.ts";
 
 export class ProgramValued implements IProgramValued {
 
@@ -31,6 +32,10 @@ export class ProgramValued implements IProgramValued {
 
     getVersion(): string {
         return this.getDeclaration().getVersion();
+    }
+
+    getVersionOption(): IOptionDeclaration {
+        return this.getDeclaration().getVersionOption();
     }
 
     getUsage(): string {

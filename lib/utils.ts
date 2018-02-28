@@ -10,6 +10,9 @@ import {ICommandDeclaration} from "./ICommandDeclaration.ts";
 import {IProgramDeclaration} from "./IProgramDeclaration.ts";
 import {IProgramWrapper} from "./IProgramWrapper.ts";
 import {ICommandWrapper} from "./ICommandWrapper";
+import camelCase = require("lodash.camelcase");
+import snakeCase = require("lodash.snakecase");
+import kebabCase = require("lodash.kebabcase");
 
 const programs: [IProgramWrapper, IProgramDeclaration][]  = [],
       commands: [ICommandWrapper, ICommandDeclaration][]  = [],
@@ -276,7 +279,15 @@ export function findOptionByShort<O extends IOption>(short: string, options: O[]
 
 export function findOptionByLong<O extends IOption>(long: string, options: O[]): O {
     for (const option of options) {
-        if (long === option.getLong()) {
+        const value: string = option.getLong(),
+              variants: string[] = [camelCase(value), snakeCase(value), kebabCase(value)]
+                  .reduce((accumulator: string[], value: string) => {
+                      if (value && accumulator.indexOf(value) === -1) {
+                          accumulator.push(value);
+                      }
+                      return accumulator;
+                  }, []);
+        if (variants.indexOf(long) !== -1) {
             return option;
         }
     }

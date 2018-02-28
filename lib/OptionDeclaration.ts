@@ -28,7 +28,47 @@ export class OptionDeclaration implements IOptionDeclaration {
             negativePrefixes: string[] = options.negativePrefixes,
             preparationFunction: (value: any) => any = options.preparationFunction,
             matches: string[];
-        if (matches = flags.match(/^\s*(?:-([a-z]),\s*)?(?:--([a-z][a-z0-9-]*))(?:\s<([a-z]+)>)?\s*$/i)) {
+        if (matches = flags.match(/^\s*-([a-z])(?:\s<([a-z]\w*)>)?\s*$/i)) {
+            this.setFlags(flags);
+            this.setRequired(true);
+            this.setShort(matches[1]);
+            this.setLong(null);
+            this.setType(matches[2]);
+            this.setDescription(description);
+            this.setDefaultValue(defaultValue);
+            this.setNegativePrefixes(negativePrefixes);
+            this.setPreparationFunction(preparationFunction);
+        } else if (matches = flags.match(/^\s*-([a-z])(?:\s\[([a-z]\w*)\])?\s*$/i)) {
+            this.setFlags(flags);
+            this.setOptional(true);
+            this.setShort(matches[1]);
+            this.setLong(null);
+            this.setType(matches[2]);
+            this.setDescription(description);
+            this.setDefaultValue(defaultValue);
+            this.setNegativePrefixes(negativePrefixes);
+            this.setPreparationFunction(preparationFunction);
+        } else if (matches = flags.match(/^\s*--([a-z][\w-]*)(?:\s<([a-z]\w*)>)?\s*$/i)) {
+            this.setFlags(flags);
+            this.setRequired(true);
+            this.setShort(null);
+            this.setLong(matches[1]);
+            this.setType(matches[2]);
+            this.setDescription(description);
+            this.setDefaultValue(defaultValue);
+            this.setNegativePrefixes(negativePrefixes);
+            this.setPreparationFunction(preparationFunction);
+        } else if (matches = flags.match(/^\s*--([a-z][\w-]*)(?:\s\[([a-z]\w*)\])?\s*$/i)) {
+            this.setFlags(flags);
+            this.setOptional(true);
+            this.setShort(null);
+            this.setLong(matches[1]);
+            this.setType(matches[2]);
+            this.setDescription(description);
+            this.setDefaultValue(defaultValue);
+            this.setNegativePrefixes(negativePrefixes);
+            this.setPreparationFunction(preparationFunction);
+        } else if (matches = flags.match(/^\s*-([a-z]),\s*(?:--([a-z][\w-]*))(?:\s<([a-z]\w*)>)?\s*$/i)) {
             this.setFlags(flags);
             this.setRequired(true);
             this.setShort(matches[1]);
@@ -38,7 +78,7 @@ export class OptionDeclaration implements IOptionDeclaration {
             this.setDefaultValue(defaultValue);
             this.setNegativePrefixes(negativePrefixes);
             this.setPreparationFunction(preparationFunction);
-        } else if (matches = flags.match(/^\s*(?:-([a-z]),\s*)?(?:--([a-z][a-z0-9-]*))(?:\s\[([a-z]+)\])?\s*$/i)) {
+        } else if (matches = flags.match(/^\s*-([a-z]),\s*(?:--([a-z][\w-]*))(?:\s\[([a-z]\w*)\])?\s*$/i)) {
             this.setFlags(flags);
             this.setOptional(true);
             this.setShort(matches[1]);
@@ -49,7 +89,7 @@ export class OptionDeclaration implements IOptionDeclaration {
             this.setNegativePrefixes(negativePrefixes);
             this.setPreparationFunction(preparationFunction);
         } else {
-            throw new Error("Invalid flags format");
+            throw new Error("Invalid flags format.");
         }
     }
 
@@ -137,7 +177,7 @@ export class OptionDeclaration implements IOptionDeclaration {
     }
 
     public setPreparationFunction(preparationFunction: (value: any) => any): void {
-        this._preparationFunction = preparationFunction;
+        this._preparationFunction = preparationFunction || null;
     }
 
     public getPreparationFunction(): (value: any) => any {

@@ -15,6 +15,9 @@ import {ProgramValued} from "./ProgramValued.ts";
 import {CommandValued} from "./CommandValued.ts";
 import {ProgramDeclaration} from "./ProgramDeclaration.ts";
 import {IProgramDeclaration} from "./IProgramDeclaration.ts";
+import camelCase = require("lodash.camelcase");
+import snakeCase = require("lodash.snakecase");
+import kebabCase = require("lodash.kebabcase");
 import {setProgramDeclaration, getProgramDeclaration, addCommandToProgram, getStdoutHandlerForProgram, getStderrHandlerForProgram, getExitHandlerForProgram, showError,
     getCountOfRequireArguments, findArgumentByIndex, findCommandByName,
     findCommandByAlias, findOptionByShort, findOptionByLong, showHelp} from "./utils.ts";
@@ -68,11 +71,7 @@ export class ProgramWrapper implements IProgramWrapper {
             if (!declaration) {
                 throw new Error("Program declaration was removed!");
             }
-            declaration.setVersion(version);
-            declaration.addOption(new OptionDeclaration({
-                flags : flags || "-V, --version",
-                description : description || "Show version."
-            }));
+            declaration.setVersion(version, flags, description);
             return this;
         } catch (error) {
             showError(error, null, getStdoutHandlerForProgram(this), getStderrHandlerForProgram(this));
@@ -209,10 +208,28 @@ export class ProgramWrapper implements IProgramWrapper {
               commandOpts: IOptionValued[]   = [],
               stdout: (text: string) => void = getStdoutHandlerForProgram(this);
 
+        function getLongKeyVariants(option: IOptionDeclaration): string[] {
+            if (option) {
+                const long: string = option.getLong();
+                return [camelCase(long), snakeCase(long), kebabCase(long)]
+                    .reduce((accumulator: string[], value: string) => {
+                    if (value && accumulator.indexOf(value) === -1) {
+                        accumulator.push(value);
+                    }
+                    return accumulator;
+                }, []);
+            }
+            return [];
+        }
+
+        function getVersions(program: IProgramDeclaration): string[] {
+            return getLongKeyVariants(program.getVersionOption());
+        }
+
         try {
             while (data.length !== 0) {
                 const item: string = data.shift();
-                if (/^--[a-z][a-z0-9-]*$/i.test(item)) {
+                if (/^--[a-z][\w-]*$/i.test(item)) {
                     const long: string = item.substr(2),
                           declaration: IOptionDeclaration = findOptionByLong<IOptionDeclaration>(long, (command || program).getOptions()),
                           preparationFunction: (value: any) => any = declaration ? declaration.getPreparationFunction() || null : null;
@@ -244,7 +261,7 @@ export class ProgramWrapper implements IProgramWrapper {
                             value : preparationFunction ? preparationFunction(value) : value
                         }));
                     }
-                } else if (/^--[a-z][a-z0-9-]*=/i.test(item)) {
+                } else if (/^--[a-z][\w-]*=/i.test(item)) {
                     const long: string  = item.substr(2, item.indexOf('=') - 2),
                           value: string = item.substr(item.indexOf('=') + 1),
                           declaration: IOptionDeclaration = findOptionByLong<IOptionDeclaration>(long, (command || program).getOptions()),
@@ -389,7 +406,7 @@ export class ProgramWrapper implements IProgramWrapper {
 
             const programOptions: IOptionDeclaration[] = program.getOptions();
             for (const declaration of programOptions) {
-                if (["help", "version"].indexOf(declaration.getLong()) === -1 &&
+                if (["help", ...getVersions(program)].indexOf(declaration.getLong()) === -1 &&
                     !findOptionByLong<IOptionValued>("help", commandOpts) &&
                     !findOptionByLong<IOptionValued>(declaration.getLong(), programOpts)) {
                     if (!declaration.isBool() &&
@@ -440,7 +457,12 @@ export class ProgramWrapper implements IProgramWrapper {
                 return getExitHandlerForProgram(this)(0);
             }
 
-            if (findOptionByLong<IOptionValued>("version", programOpts)) {
+            const versionOption: IOptionDeclaration = program.getVersionOption();
+            if (versionOption &&
+                (
+                    findOptionByLong<IOptionValued>(program.getVersionOption().getLong(), programOpts) ||
+                    findOptionByShort<IOptionValued>(program.getVersionOption().getShort(), programOpts)
+                )) {
                 stdout("Version: " + program.getVersion() || "undefined");
                 stdout("\n");
                 return getExitHandlerForProgram(this)(0);
