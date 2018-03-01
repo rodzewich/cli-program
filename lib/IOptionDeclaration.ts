@@ -8,7 +8,7 @@ export interface IOptionDeclaration extends IOption {
     setRequired(required: boolean): void;
     setOptional(optional: boolean): void;
     setType(type: string): void;
-    setDefaultValue(defaultValue: any): void;
+    setDefaultValue(defaultValue: string): void;
     setNegativePrefixes(negativePrefixes: string[]): void;
-    setPreparationFunction(preparationFunction: (value: any) => any): void;
+    setPreparationFunction(preparationFunction: (value: string) => any): void;
 }

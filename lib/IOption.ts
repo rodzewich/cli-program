@@ -7,7 +7,7 @@ export interface IOption {
     isOptional(): boolean;
     isBool(): boolean;
     getType(): string;
-    getDefaultValue(): any;
+    getDefaultValue(): string;
     getNegativePrefixes(): string[];
-    getPreparationFunction(): (value: any) => any;
+    getPreparationFunction(): (value: string) => any;
 }

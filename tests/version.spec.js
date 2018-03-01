@@ -13,7 +13,7 @@ var ProgramWrapper = require("../build/index").ProgramWrapper,
 
 describe("Program version", function () {
 
-    it("Use version by regular option \"-V\"", function () {
+    it("Use version by regular option \"-V\"", function (done) {
         var program = new ProgramWrapper(),
             content = [];
         stdout(program, function (stdout) {
@@ -26,12 +26,14 @@ describe("Program version", function () {
             expect(code).to.equal(0);
             expect(content.join("")).to.equal("Version: 0.0.1\n");
             removeProgramDeclaration(program);
+            done();
         });
-        program.version("0.0.1");
-        program.parse(null, [null, "program", "-V"]);
+        program
+            .version("0.0.1")
+            .parse(null, [null, "program", "-V"]);
     });
 
-    it("Use version by regular option \"--version\"", function () {
+    it("Use version by regular option \"--version\"", function (done) {
         var program = new ProgramWrapper(),
             content = [];
         stdout(program, function (stdout) {
@@ -44,12 +46,14 @@ describe("Program version", function () {
             expect(code).to.equal(0);
             expect(content.join("")).to.equal("Version: 0.0.1\n");
             removeProgramDeclaration(program);
+            done();
         });
-        program.version("0.0.1");
-        program.parse(null, [null, "program", "--version"]);
+        program
+            .version("0.0.1")
+            .parse(null, [null, "program", "--version"]);
     });
 
-    it("Use version by custom flags \"--myVersion\" (camel case)", function () {
+    it("Use version by custom flags \"--myVersion\" (camel case)", function (done) {
         var program = new ProgramWrapper(),
             content = [];
         stdout(program, function (stdout) {
@@ -62,12 +66,14 @@ describe("Program version", function () {
             expect(code).to.equal(0);
             expect(content.join("")).to.equal("Version: 0.0.1\n");
             removeProgramDeclaration(program);
+            done();
         });
-        program.version("0.0.1", "--my-version");
-        program.parse(null, [null, "program", "--myVersion"]);
+        program
+            .version("0.0.1", "--my-version")
+            .parse(null, [null, "program", "--myVersion"]);
     });
 
-    it("Use version by custom flags \"--my-version\" (kebab case)", function () {
+    it("Use version by custom flags \"--my-version\" (kebab case)", function (done) {
         var program = new ProgramWrapper(),
             content = [];
         stdout(program, function (stdout) {
@@ -80,12 +86,14 @@ describe("Program version", function () {
             expect(code).to.equal(0);
             expect(content.join("")).to.equal("Version: 0.0.1\n");
             removeProgramDeclaration(program);
+            done();
         });
-        program.version("0.0.1", "--my-version");
-        program.parse(null, [null, "program", "--my-version"]);
+        program
+            .version("0.0.1", "--my-version")
+            .parse(null, [null, "program", "--my-version"]);
     });
 
-    it("Use version by custom flags \"--my_version\" (snake case)", function () {
+    it("Use version by custom flags \"--my_version\" (snake case)", function (done) {
         var program = new ProgramWrapper(),
             content = [];
         stdout(program, function (stdout) {
@@ -98,12 +106,14 @@ describe("Program version", function () {
             expect(code).to.equal(0);
             expect(content.join("")).to.equal("Version: 0.0.1\n");
             removeProgramDeclaration(program);
+            done();
         });
-        program.version("0.0.1", "--my-version");
-        program.parse(null, [null, "program", "--my_version"]);
+        program
+            .version("0.0.1", "--my-version")
+            .parse(null, [null, "program", "--my_version"]);
     });
 
-    it("Use regular version flags in help", function () {
+    it("Use regular version flags in help", function (done) {
         var program = new ProgramWrapper(),
             content = [];
         stdout(program, function (stdout) {
@@ -117,12 +127,14 @@ describe("Program version", function () {
             expect(content.join("")).to.have.string("-V, --version");
             expect(content.join("")).to.have.string("Show version");
             removeProgramDeclaration(program);
+            done();
         });
-        program.version("0.0.1");
-        program.parse(null, [null, "program", "--help"]);
+        program
+            .version("0.0.1")
+            .parse(null, [null, "program", "--help"]);
     });
 
-    it("Use long custom version flags in help", function () {
+    it("Use long custom version flags in help", function (done) {
         var program = new ProgramWrapper(),
             content = [];
         stdout(program, function (stdout) {
@@ -136,12 +148,14 @@ describe("Program version", function () {
             expect(content.join("")).to.have.string("--custom-version-flag");
             expect(content.join("")).to.have.string("Show version");
             removeProgramDeclaration(program);
+            done();
         });
-        program.version("0.0.1", "--custom-version-flag");
-        program.parse(null, [null, "program", "--help"]);
+        program
+            .version("0.0.1", "--custom-version-flag")
+            .parse(null, [null, "program", "--help"]);
     });
 
-    it("Use short custom version flags in help", function () {
+    it("Use short custom version flags in help", function (done) {
         var program = new ProgramWrapper(),
             content = [];
         stdout(program, function (stdout) {
@@ -155,12 +169,14 @@ describe("Program version", function () {
             expect(content.join("")).to.have.string("-C");
             expect(content.join("")).to.have.string("Show version");
             removeProgramDeclaration(program);
+            done();
         });
-        program.version("0.0.1", "-C");
-        program.parse(null, [null, "program", "--help"]);
+        program
+            .version("0.0.1", "-C")
+            .parse(null, [null, "program", "--help"]);
     });
 
-    it("Use custom version flags with description in help", function () {
+    it("Use custom version flags with description in help", function (done) {
         var program = new ProgramWrapper(),
             content = [];
         stdout(program, function (stdout) {
@@ -174,12 +190,14 @@ describe("Program version", function () {
             expect(content.join("")).to.have.string("-V, --custom-version-flag");
             expect(content.join("")).to.have.string("Custom description");
             removeProgramDeclaration(program);
+            done();
         });
-        program.version("0.0.1", "-V, --custom-version-flag", "Custom description");
-        program.parse(null, [null, "program", "--help"]);
+        program
+            .version("0.0.1", "-V, --custom-version-flag", "Custom description")
+            .parse(null, [null, "program", "--help"]);
     });
 
-    it("Use version without declaration", function () {
+    it("Use version without declaration", function (done) {
         var program = new ProgramWrapper(),
             content = [];
         stdout(program, function (stdout) {
@@ -194,6 +212,7 @@ describe("Program version", function () {
             expect(content.join("")).to.not.have.string("--version");
             expect(content.join("")).to.not.have.string("Show version");
             removeProgramDeclaration(program);
+            done();
         });
         program.parse(null, [null, "program", "--help"]);
     });

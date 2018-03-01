@@ -26,7 +26,12 @@ export class OptionValued implements IOptionValued {
     }
 
     public getAttribute(): string {
-        return camelCase(this.getLong());
+        const short: string = this.getShort(),
+              long: string  = this.getLong();
+        if (long !== null) {
+            return camelCase(this.getLong());
+        }
+        return short;
     }
 
     public getDescription(): string {

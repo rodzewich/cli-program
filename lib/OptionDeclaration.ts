@@ -15,11 +15,11 @@ export class OptionDeclaration implements IOptionDeclaration {
 
     private _type: string = null;
 
-    private _defaultValue: any = null;
+    private _defaultValue: string = null;
 
     private _negativePrefixes: string[] = [];
 
-    private _preparationFunction: (value: any) => any = null;
+    private _preparationFunction: (value: string) => any = null;
 
     constructor(options:{flags: string, description?: string, defaultValue?: any, negativePrefixes?: string[], preparationFunction?: (value: any) => any}) {
         let flags: string = String(options.flags || ""),
@@ -153,11 +153,11 @@ export class OptionDeclaration implements IOptionDeclaration {
         return this._type;
     }
 
-    public setDefaultValue(defaultValue: any): void {
+    public setDefaultValue(defaultValue: string): void {
         this._defaultValue = defaultValue || null;
     }
 
-    public getDefaultValue(): any {
+    public getDefaultValue(): string {
         return this._defaultValue;
     }
 
@@ -176,12 +176,33 @@ export class OptionDeclaration implements IOptionDeclaration {
         return this._negativePrefixes;
     }
 
-    public setPreparationFunction(preparationFunction: (value: any) => any): void {
+    public setPreparationFunction(preparationFunction: (value: string) => any): void {
         this._preparationFunction = preparationFunction || null;
     }
 
-    public getPreparationFunction(): (value: any) => any {
-        return this._preparationFunction;
+    public getPreparationFunction(): (value: string) => any {
+        const type: string = this.getType();
+        function defaultPreparationFunction(value: string): any {
+            const temp: string = String(value || "");
+            switch (type) {
+                case "boolean":
+                    return ["", "0", "no", "off", "false"]
+                            .indexOf(temp.replace(/^\s*(\S+(?:.*?\S))\s*$/, "$1").toLowerCase()) === -1;
+                case "number":
+                    if (/^\s*0[0-7]+\s*$/.test(temp)) {
+                        return parseInt(temp, 8);
+                    }
+                    if (/^\s*0x[0-9a-f]+\s*$/i.test(temp)) {
+                        return parseInt(temp.substr(temp.indexOf("x") + 1), 16);
+                    }
+                    return parseFloat(temp) || 0;
+                case "string":
+                    return temp;
+                default:
+                    return value;
+            }
+        }
+        return this._preparationFunction || defaultPreparationFunction;
     }
 
 }

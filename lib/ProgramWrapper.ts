@@ -249,13 +249,13 @@ export class ProgramWrapper implements IProgramWrapper {
                         throw new Error("Option " + JSON.stringify(declaration.getLong()) + " should be defined.");
                     }
                     if (command) {
-                        const value: any = declaration.isBool() ? true : data.shift();
+                        const value: any = declaration.isBool() ? "true" : data.shift();
                         commandOpts.push(new OptionValued({
                             declaration,
                             value : preparationFunction ? preparationFunction(value) : value
                         }));
                     } else {
-                        const value: any = declaration.isBool() ? true : data.shift();
+                        const value: any = declaration.isBool() ? "true" : data.shift();
                         programOpts.push(new OptionValued({
                             declaration,
                             value : preparationFunction ? preparationFunction(value) : value
@@ -288,68 +288,78 @@ export class ProgramWrapper implements IProgramWrapper {
                             value : preparationFunction ? preparationFunction(value) : value
                         }));
                     }
-                } else if (/^-[a-z]$/i.test(item)) {
-                    const short: string = item.substr(1),
-                          declaration: IOptionDeclaration = findOptionByShort<IOptionDeclaration>(short, (command || program).getOptions()),
-                          preparationFunction: (value: any) => any = declaration ? declaration.getPreparationFunction() || null : null;
-                    if (declaration === null) {
-                        let suffix: string = "";
-                        if (command) {
-                            suffix = " in " + JSON.stringify(command.getName());
-                            if (command.getAlias()) {
-                                suffix += "(" + JSON.stringify(command.getAlias()) + ")";
+                } else if (/^-[a-z]+$/i.test(item)) {
+                    const options: string[] = item.substr(1).split(""),
+                          length: number = options.length;
+                    for (let index = 0; index < length; index++) {
+                        const short: string = options[index],
+                              last: boolean = length === index + 1,
+                              declaration: IOptionDeclaration = findOptionByShort<IOptionDeclaration>(short, (command || program).getOptions()),
+                              preparationFunction: (value: any) => any = declaration ? declaration.getPreparationFunction() || null : null;
+                        if (declaration === null) {
+                            let suffix: string = "";
+                            if (command) {
+                                suffix = " in " + JSON.stringify(command.getName());
+                                if (command.getAlias()) {
+                                    suffix += "(" + JSON.stringify(command.getAlias()) + ")";
+                                }
+                                suffix += " command";
                             }
-                            suffix += " command";
+                            throw new Error("You cannot use undeclared " + JSON.stringify("-" + short) + " option" + suffix + ".");
                         }
-                        throw new Error("You cannot use undeclared " + JSON.stringify(short) + " option" + suffix + ".");
-                    }
-                    if (!declaration.isBool() && data.length === 0 ||
-                        !declaration.isBool() && data[0].substr(0, 1) === "-") {
-                        throw new Error("Option " + JSON.stringify(declaration.getShort()) + " should be defined.");
-                    }
-                    if (command) {
-                        const value: any = declaration.isBool() ? true : data.shift();
-                        commandOpts.push(new OptionValued({
-                            declaration,
-                            value : preparationFunction ? preparationFunction(value) : value
-                        }));
-                    } else {
-                        const value: any = declaration.isBool() ? true : data.shift();
-                        programOpts.push(new OptionValued({
-                            declaration,
-                            value : preparationFunction ? preparationFunction(value) : value
-                        }));
-                    }
-                } else if (/^-[a-z]=/i.test(item)) {
-                    const short: string = item.substr(1, 1),
-                          value: string = item.substr(3),
-                          declaration: IOptionDeclaration = findOptionByShort<IOptionDeclaration>(short, (command || program).getOptions()),
-                          preparationFunction: (value: any) => any = declaration ? declaration.getPreparationFunction() || null : null;
-                    if (declaration === null) {
-                        let suffix: string = "";
+                        if (!declaration.isBool() && !last ||
+                            !declaration.isBool() && data.length === 0 ||
+                            !declaration.isBool() && data[0].substr(0, 1) === "-") {
+                            throw new Error("Option " + JSON.stringify("-" + declaration.getShort()) + " should be defined.");
+                        }
                         if (command) {
-                            suffix = " in " + JSON.stringify(command.getName());
-                            if (command.getAlias()) {
-                                suffix += "(" + JSON.stringify(command.getAlias()) + ")";
-                            }
-                            suffix += " command";
+                            const value: any = declaration.isBool() ? "true" : data.shift();
+                            commandOpts.push(new OptionValued({
+                                declaration,
+                                value : preparationFunction ? preparationFunction(value) : value
+                            }));
+                        } else {
+                            const value: any = declaration.isBool() ? "true" : data.shift();
+                            programOpts.push(new OptionValued({
+                                declaration,
+                                value : preparationFunction ? preparationFunction(value) : value
+                            }));
                         }
-                        throw new Error("You cannot use undeclared " + JSON.stringify(short) + " option" + suffix + ".");
                     }
-                    if (!declaration.isBool() && data.length === 0 ||
-                        !declaration.isBool() && data[0].substr(0, 1) === "-") {
-                        throw new Error("Option " + JSON.stringify(declaration.getShort()) + " should be defined.");
-                    }
-                    if (command) {
-                        commandOpts.push(new OptionValued({
-                            declaration,
-                            value : preparationFunction ? preparationFunction(value) : value
-                        }));
-                    } else {
-                        programOpts.push(new OptionValued({
-                            declaration,
-                            value : preparationFunction ? preparationFunction(value) : value
-                        }));
+                } else if (/^-[a-z]+=/i.test(item)) {
+                    const options: string[] = item.substr(1, item.indexOf("=") - 1).split(""),
+                          value: string = item.substr(item.indexOf("=") + 1),
+                          length: number = options.length;
+                    for (let index = 0; index < length; index++) {
+                        const short: string = options[index],
+                              last: boolean = length === index + 1,
+                              declaration: IOptionDeclaration = findOptionByShort<IOptionDeclaration>(short, (command || program).getOptions()),
+                              preparationFunction: (value: any) => any = declaration ? declaration.getPreparationFunction() || null : null;
+                        if (declaration === null) {
+                            let suffix: string = "";
+                            if (command) {
+                                suffix = " in " + JSON.stringify(command.getName());
+                                if (command.getAlias()) {
+                                    suffix += "(" + JSON.stringify(command.getAlias()) + ")";
+                                }
+                                suffix += " command";
+                            }
+                            throw new Error("You cannot use undeclared " + JSON.stringify("-" + short) + " option" + suffix + ".");
+                        }
+                        if (!declaration.isBool() && !last) {
+                            throw new Error("Option " + JSON.stringify(declaration.getShort()) + " should be defined.");
+                        }
+                        if (command) {
+                            commandOpts.push(new OptionValued({
+                                declaration,
+                                value : preparationFunction ? preparationFunction(value) : value
+                            }));
+                        } else {
+                            programOpts.push(new OptionValued({
+                                declaration,
+                                value : preparationFunction ? preparationFunction(value) : value
+                            }));
+                        }
                     }
                 } else if (!command && program.getCommands().length !== 0) {
                     command = findCommandByName<ICommandDeclaration>(item, program.getCommands()) ||
@@ -420,7 +430,7 @@ export class ProgramWrapper implements IProgramWrapper {
                     }
                     programOpts.push(new OptionValued({
                         declaration,
-                        value: declaration.getDefaultValue()
+                        value: declaration.getPreparationFunction()(declaration.getDefaultValue())
                     }));
                 }
             }
