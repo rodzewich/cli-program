@@ -3,7 +3,7 @@ var fs = require("fs"),
     util = require("util"),
     expect = require("chai").expect;
 require("./sourcemap");
-var ProgramWrapper = require("../build/index").ProgramWrapper;
+var ProgramWrapper = require("../build/index-test").ProgramWrapper;
 
 // TODO: check help description
 

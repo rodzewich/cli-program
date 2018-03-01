@@ -3,12 +3,12 @@ var fs = require("fs"),
     util = require("util"),
     expect = require("chai").expect;
 require("./sourcemap");
-var ProgramWrapper = require("../build/index").ProgramWrapper,
-    removeProgramDeclaration = require("../build/index").removeProgramDeclaration,
+var ProgramWrapper = require("../build/index-test").ProgramWrapper,
+    removeProgramDeclaration = require("../build/index-test").removeProgramDeclaration,
     cleanColors  = require("./utils").cleanColors,
-    stdout = require("../build/index").setStdoutHandlerForProgram,
-    stderr = require("../build/index").setStderrHandlerForProgram,
-    exit   = require("../build/index").setExitHandlerForProgram;
+    stdout = require("../build/index-test").setStdoutHandlerForProgram,
+    stderr = require("../build/index-test").setStderrHandlerForProgram,
+    exit   = require("../build/index-test").setExitHandlerForProgram;
 
 
 describe("Program version", function () {
