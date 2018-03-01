@@ -207,7 +207,7 @@ program
 program.parse();
 ```
 
-More demos can be found in the [examples](https://github.com/tj/cli-program/tree/master/examples) directory.
+More demos can be found in the [examples](https://github.com/rodzewich/cli-program/tree/master/examples) directory.
 
 ## License
 
