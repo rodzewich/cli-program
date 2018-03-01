@@ -171,7 +171,7 @@ export class ProgramWrapper implements IProgramWrapper {
         try {
             const declaration: IProgramDeclaration = getProgramDeclaration(this),
                   matches: string[] = String(args || "")
-                      .match(/^(<(?:[a-z][a-z0-9-]*)>|\[(?:[a-z][a-z0-9-]*)(?:\.\.\.)?\])((?:\s<(?:[a-z][a-z0-9-]*)>|\s\[(?:[a-z][a-z0-9-]*)(?:\.\.\.)?\])*)$/i);
+                      .match(/^\s*(<(?:[a-z][\w-]*)>|\[(?:[a-z][\w-]*)(?:\.\.\.)?\])((?:\s+<(?:[a-z][\w-]*)>|\s\[(?:[a-z][\w-]*)(?:\.\.\.)?\])*)\s*$/i);
             if (matches === null) {
                 throw new Error("Invalid arguments format");
             }
@@ -180,9 +180,11 @@ export class ProgramWrapper implements IProgramWrapper {
             }
             declaration.addArgument(new ArgumentDeclaration(matches[1]));
             if (matches[2]) {
-                const other: string[] = matches[2].split(/\s+/);
-                for (const argument of other) {
-                    declaration.addArgument(new ArgumentDeclaration(argument));
+                const otherArguments: string[] = matches[2].split(/\s+/);
+                for (const argument of otherArguments) {
+                    if (argument !== "") {
+                        declaration.addArgument(new ArgumentDeclaration(argument));
+                    }
                 }
             }
             return this;
@@ -461,6 +463,26 @@ export class ProgramWrapper implements IProgramWrapper {
                 }
             }
 
+            const programArguments: IArgumentDeclaration[] = program.getArguments();
+            if (programArguments && programArguments.length) {
+                for (const argument of programArguments) {
+                    if (programArgs.filter((arg: IArgumentValued) => arg.getName() === argument.getName()).length === 0) {
+                        programArgs.push(new ArgumentValued({declaration: argument, value: null}));
+                    }
+                }
+            }
+
+            if (command) {
+                const commandArguments: IArgumentDeclaration[] = command.getArguments();
+                if (commandArguments && commandArguments.length) {
+                    for (const argument of commandArguments) {
+                        if (commandArgs.filter((arg: IArgumentValued) => arg.getName() === argument.getName()).length === 0) {
+                            commandArgs.push(new ArgumentValued({declaration: argument, value: null}));
+                        }
+                    }
+                }
+            }
+
             if (findOptionByLong<IOptionValued>("help", programOpts)) {
                 stdout(showHelp(new ProgramValued(program, [], programOpts, programArgs), name));
                 stdout("\n");
@@ -489,13 +511,15 @@ export class ProgramWrapper implements IProgramWrapper {
                 setTimeout(() => {
                     action(
                         programArgs.reduce((accumulator:{[key: string]: any}, argument: IArgumentValued) => {
-                            const name: string = argument.getName(),
+                            const name: string = camelCase(argument.getName()),
                                   value: any   = argument.getValue();
                             if (argument.isSpread()) {
                                 if (!Array.isArray(accumulator[name])) {
                                     accumulator[name] = [];
                                 }
-                                accumulator[name].push(value);
+                                if (value !== null) {
+                                    accumulator[name].push(value);
+                                }
                             } else {
                                 accumulator[name] = value;
                             }
@@ -526,26 +550,30 @@ export class ProgramWrapper implements IProgramWrapper {
                         commandAction(
                             {
                                 ...programArgs.reduce((accumulator:{[key: string]: any}, argument: IArgumentValued) => {
-                                    const name: string = argument.getName(),
+                                    const name: string = camelCase(argument.getName()),
                                           value: any   = argument.getValue();
                                     if (argument.isSpread()) {
                                         if (!Array.isArray(accumulator[name])) {
                                             accumulator[name] = [];
                                         }
-                                        accumulator[name].push(value);
+                                        if (value !== null) {
+                                            accumulator[name].push(value);
+                                        }
                                     } else {
                                         accumulator[name] = value;
                                     }
                                     return accumulator;
                                 }, {}),
                                 ...commandArgs.reduce((accumulator:{[key: string]: any}, argument: IArgumentValued) => {
-                                    const name: string = argument.getName(),
+                                    const name: string = camelCase(argument.getName()),
                                           value: any   = argument.getValue();
                                     if (argument.isSpread()) {
                                         if (!Array.isArray(accumulator[name])) {
                                             accumulator[name] = [];
                                         }
-                                        accumulator[name].push(value);
+                                        if (value !== null) {
+                                            accumulator[name].push(value);
+                                        }
                                     } else {
                                         accumulator[name] = value;
                                     }
@@ -554,6 +582,7 @@ export class ProgramWrapper implements IProgramWrapper {
                             },
                             {
                                 ...programOpts.reduce((accumulator:{[key: string]: any}, option: IOptionValued) => {
+                                    // TODO: check version option
                                     if (["help", "version", "color"].indexOf(option.getLong()) === -1) {
                                         accumulator[option.getAttribute()] = option.getValue();
                                     }

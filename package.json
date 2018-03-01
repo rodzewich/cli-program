@@ -1,7 +1,17 @@
 {
   "name": "cli-program",
-  "version": "1.0.15",
+  "version": "1.0.20",
   "license": "MIT",
+  "keywords": [
+    "cli",
+    "command",
+    "line",
+    "interface",
+    "program",
+    "option",
+    "command",
+    "argument"
+  ],
   "scripts": {
     "build": "rm -rf ./build && /usr/bin/env node ./node_modules/.bin/webpack",
     "increment": "/usr/bin/env node ./increment.js",

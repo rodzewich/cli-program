@@ -25,7 +25,7 @@ PackagePlugin.prototype.apply = function (compiler) {
                 var data = Object
                     .keys(JSON.parse(content))
                     .reduce(function (accumulator, key) {
-                        if (["name", "version", "license", "dependencies", "email"].indexOf(key) !== -1) {
+                        if (["name", "version", "license", "dependencies", "email", "keywords"].indexOf(key) !== -1) {
                             accumulator[key] = JSON.parse(content)[key]
                         }
                         return accumulator;

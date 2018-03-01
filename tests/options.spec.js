@@ -5,6 +5,8 @@ var fs = require("fs"),
 require("./sourcemap");
 var ProgramWrapper = require("../build/index").ProgramWrapper;
 
+// TODO: check help description
+
 describe("Program options", function () {
 
     it("Use short boolean options in bunch", function (done) {
