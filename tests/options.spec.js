@@ -1,18 +1,9 @@
 "use strict";
 var fs = require("fs"),
     util = require("util"),
-    chai = require("chai"),
-    expect = chai.expect,
-    promised = require("chai-as-promised");
-chai.use(promised);
+    expect = require("chai").expect;
 require("./sourcemap");
-var ProgramWrapper = require("../build/index").ProgramWrapper,
-    removeProgramDeclaration = require("../build/index").removeProgramDeclaration,
-    cleanColors  = require("./utils").cleanColors,
-    stdout = require("../build/index").setStdoutHandlerForProgram,
-    stderr = require("../build/index").setStderrHandlerForProgram,
-    exit   = require("../build/index").setExitHandlerForProgram;
-
+var ProgramWrapper = require("../build/index").ProgramWrapper;
 
 describe("Program options", function () {
 
