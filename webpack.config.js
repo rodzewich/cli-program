@@ -21,7 +21,7 @@ module.exports = [
         output  : {
             filename          : "./index.js",
             sourceMapFilename : "./index.js.map",
-            libraryTarget     : "commonjs",
+            libraryTarget     : "commonjs2",
             path : TARGET_DIRECTORY
         },
         target  : 'node',
@@ -55,7 +55,7 @@ module.exports = [
         output  : {
             filename          : "./index-test.js",
             sourceMapFilename : "./index-test.js.map",
-            libraryTarget     : "commonjs",
+            libraryTarget     : "commonjs2",
             path : TARGET_DIRECTORY
         },
         target  : 'node',

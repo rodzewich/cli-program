@@ -43,7 +43,7 @@ DeclarationPlugin.prototype.apply = function (compiler) {
                             return line && line.indexOf("import") === -1;
                         }).join("\n").replace("export ", ""));
                         content.push("declare const program: IProgramWrapper;");
-                        content.push("export {program};");
+                        content.push("export = program;");
                         fs.writeFile(
                             TARGET_FILENAME,
                             content.join("\n"),

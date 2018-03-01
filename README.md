@@ -117,13 +117,27 @@ Angled brackets (e.g. `<cmd>`) indicate required input. Square brackets (e.g. `[
 ## Git-style sub-commands
 
 ```js
-import {program} from "cli-program";
+var program = require("cli-program");
 program
   .version("0.1.0")
-  .command("install [name]", "install one or more packages")
-  .command("search [query]", "search with optional query")
-  .command("list", "list packages installed", {isDefault: true})
-  .parse(process.argv);
+  .command("install [name]", "Install one or more packages")
+  .action(function (args, opts) {
+    console.log("args: " + JSON.stringify(args));
+    console.log("opts: " + JSON.stringify(opts));
+  });
+program
+  .command("search [query]", "Search with optional query")
+  .action(function (args, opts) {
+    console.log("args: " + JSON.stringify(args));
+    console.log("opts: " + JSON.stringify(opts));
+  });
+program
+  .command("list", "List packages installed")
+  .action(function (args, opts) {
+    console.log("args: " + JSON.stringify(args));
+    console.log("opts: " + JSON.stringify(opts));
+  });
+program.parse();
 ```
 
 When `.command()` is invoked with a description argument, no `.action(callback)` should be called to handle sub-commands, otherwise there will be an error. This tells commander that you"re going to use separate executables for sub-commands, much like `git(1)` and other popular tools.
@@ -138,7 +152,7 @@ If the program is designed to be installed globally, make sure the executables h
  The help information is auto-generated based on the information commander already knows about your program, so the following `--help` info is for free:
 
 ```
- $ ./examples/pizza --help
+$ ./examples/pizza --help
 
    Usage: pizza [options]
 
@@ -159,7 +173,7 @@ If the program is designed to be installed globally, make sure the executables h
 ## Examples
 
 ```js
-import {program} from "cli-program";
+var program = require("cli-program");
 
 program
   .version("0.1.0")
@@ -169,11 +183,11 @@ program
 
 program
   .command("setup [env]")
-  .description("run setup commands for all envs")
+  .description("Run setup commands for all envs")
   .option("-s, --setup_mode [mode]", "Which setup mode to use")
-  .action(function(env, options){
-    var mode = options.setup_mode || "normal";
-    env = env || "all";
+  .action(function(args, opts){
+    var mode = opts.setupMode || "normal";
+    var env = args.env || "all";
     console.log("setup for %s env(s) with %s mode", env, mode);
   });
 
@@ -182,20 +196,8 @@ program
   .alias("ex")
   .description("execute the given remote cmd")
   .option("-e, --exec_mode <mode>", "Which exec mode to use")
-  .action(function(cmd, options){
-    console.log("exec "%s" using %s mode", cmd, options.exec_mode);
-  }).on("--help", function() {
-    console.log("  Examples:");
-    console.log();
-    console.log("    $ deploy exec sequential");
-    console.log("    $ deploy exec async");
-    console.log();
-  });
-
-program
-  .command("*")
-  .action(function(env){
-    console.log("deploying \"%s\"", env);
+  .action(function(args, opts){
+    console.log("exec "%s" using %s mode", args.cmd, opts.execMode);
   });
 
 program.parse();

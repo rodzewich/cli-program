@@ -1,6 +1,6 @@
 {
   "name": "cli-program",
-  "version": "2.0.0",
+  "version": "2.0.3",
   "license": "MIT",
   "keywords": [
     "cli",
@@ -18,6 +18,10 @@
     "upload": "/usr/bin/env npm run increment && /usr/bin/env npm run build && /usr/bin/env npm publish ./build",
     "watch": "/usr/bin/env node ./node_modules/.bin/webpack --watch",
     "test": "./node_modules/.bin/mocha tests/**/**.spec.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/rodzewich/cli-program.git"
   },
   "dependencies": {
     "colors": "^1.1.2",
