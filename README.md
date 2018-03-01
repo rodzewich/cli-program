@@ -11,17 +11,17 @@ The complete solution for node.js command-line interfaces.
 
 ## Option parsing
 
-Options are defined with the `.option()` method, also serving as documentation for the options. The example below parses args and options from `process.argv`.
+Options are defined with the `.option(flags: string, description?: string, defaultValue?: any, negativePrefixes?: string[], preparationFunction?: (value: any) => any)` method, also serving as documentation for the options. The example below parses args and options from `process.argv`.
 
-```ts
-import {program} from "cli-program";
+```js
+var program = require("cli-program");
 program
     .version("0.1.0")
     .option("-p, --peppers", "Add peppers")
     .option("-P, --pineapple", "Add pineapple")
     .option("-b, --bbq-sauce", "Add bbq sauce")
     .option("-c, --cheese [type]", "Add the specified type of cheese [marble]", "marble")
-    .parse((args: any, opts: any) => {
+    .parse(function (args, opts) {
         console.log("you ordered a pizza with:");
         if (opts.peppers) {
             console.log("  - peppers");
@@ -40,12 +40,12 @@ Short flags may be passed as a single arg, for example `-abc` is equivalent to `
 
 Note that multi-word options starting with `--no` prefix negate the boolean value of the following word. For example, `--no-sauce` sets the value of `args.sauce` to false.
 
-```ts
-import {program} from "cli-program";
+```js
+var program = require("cli-program");
 program
     .version("0.1.0")
     .option("-p, --password <string>", "Password to connect", null, ["no", "without"])
-    .parse((args: any, opts: any) => {
+    .parse(function (args, opts) {
         if (opts.password === false) {
             console.log("Without password!");
         } else {
@@ -66,31 +66,32 @@ $ ./examples/pizza -V
 
 If you want your program to respond to the `-v` option instead of the `-V` option, simply pass custom flags to the `version` method using the same syntax as the `option` method:
 
-```ts
+```js
+var program = require("cli-program");
 program
   .version("0.0.1", "-v, --version");
 ```
 
 or with special description:
 
-```ts
+```js
+var program = require("cli-program");
 program
-  .version("0.0.1", "-v, --version", "Special description for version option");
+  .version("0.0.1", "-v, --version", "Special description");
 ```
 
-
-The version flags can be named anything, but the long option is required.
+The version flags can be named anything.
 
 ## Command-specific options
 
 You can attach options to a command.
 
-```ts
-import {program} from "cli-program";
+```js
+var program = require("cli-program");
 program
   .command("rm <dir>") // comand with required argument
   .option("-r, --recursive", "Remove recursively")
-  .action((args: any, opts: any) => {
+  .action(function (args, opts) {
     console.log("remove " + args.dir + (opts.recursive ? " recursively" : ""))
   })
 program.parse()
@@ -100,24 +101,17 @@ A command's options are validated when the command is used. Any unknown options 
 
 ## Specify the argument syntax
 
-```ts
-import {program} from "cli-program";
+```js
+var program = require("cli-program");
 program
-  .version("0.1.0")
+  .version("0.0.1")
   .arguments("<cmd> [env]")
-  .action((args: any, opts: any) => {
-     cmdValue = cmd;
-     envValue = env;
+  .parse(function (args, opts) {
+    console.log("command:", args.cmd);
+    console.log("environment:", args.env || "no environment given");
   });
-program.parse();
-
-if (typeof cmdValue === "undefined") {
-   console.error("no command given!");
-   process.exit(1);
-}
-console.log("command:", cmdValue);
-console.log("environment:", envValue || "no environment given");
 ```
+
 Angled brackets (e.g. `<cmd>`) indicate required input. Square brackets (e.g. `[env]`) indicate optional input.
 
 ## Git-style sub-commands
