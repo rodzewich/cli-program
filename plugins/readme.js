@@ -23,7 +23,7 @@ LicensePlugin.prototype.apply = function (compiler) {
                 process.exit(1);
             }
             Promise
-                .all(files.map(function (filename) {
+                .all(files.sort().map(function (filename) {
                     return new Promise(function (resolve) {
                         fs.readFile(
                             path.join(EXAMPLES_DIRECTORY, filename),

@@ -1,13 +1,15 @@
 # cli-program
 
+The complete solution for node.js command-line interfaces.
+
 [![NPM Version](http://img.shields.io/npm/v/cli-program.svg?style=flat)](https://www.npmjs.org/package/cli-program)
 [![NPM Downloads](https://img.shields.io/npm/dm/cli-program.svg?style=flat)](https://www.npmjs.org/package/cli-program)
 
-The complete solution for node.js command-line interfaces.
-
 ## Installation
 
-    $ npm install cli-program --save
+```
+$ npm install cli-program --save
+```
 
 ## Option parsing
 
@@ -81,6 +83,32 @@ program
 ```
 
 The version flags can be named anything.
+
+## Argument parsing
+
+Arguments are defined with the `arguments(args: string)` method. The example below parses args and options from `process.argv`.
+
+```js
+// declare optional argument
+program.arguments("[optional]");
+```
+
+```js
+// declare optional arguments
+program.arguments("[spread...]");
+```
+
+```js
+// declare required argument
+program.arguments("<required>");
+```
+
+```js
+// combination declare
+program.arguments("<argument> [more...]");
+```
+
+The arguments can be named anything.
 
 ## Command-specific options
 
