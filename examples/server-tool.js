@@ -18,11 +18,12 @@ program
 program
     .command("search <keyword> [keywords...]")
     .alias("s")
-    .description("Install additional plugin")
+    .description("Search information")
     .option("-R, --recursive", "Search recursive")
     .action(function (args, opts) {
         console.log("keyword: %s", JSON.stringify(args.keyword));
         console.log("keywords: %s", JSON.stringify(args.keywords));
+        console.log("recursive: %s", JSON.stringify(opts.recursive));
     });
 program.parse();
 
@@ -52,7 +53,7 @@ program.parse();
  *     Install additional plugin
  *
  *   search (alias: s) <keyword> [keywords...]
- *     Install additional plugin
+ *     Search information
  */
 
 /**
