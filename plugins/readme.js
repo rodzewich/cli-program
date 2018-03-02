@@ -35,7 +35,7 @@ LicensePlugin.prototype.apply = function (compiler) {
                                 }
                                 examplesContent.push("### " + filename);
                                 examplesContent.push("```js");
-                                examplesContent.push(content);
+                                examplesContent.push(content.replace("../build/index", "cli-program"));
                                 examplesContent.push("```");
                                 examplesContent.push("");
                                 resolve();

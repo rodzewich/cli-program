@@ -6,7 +6,6 @@ program
     .option("-U, --db-user <string>", "User for connect to DB")
     .option("-P, --db-password <string>", "Password for connect to DB", null, ["no", "without"])
     .option("-S, --db-socket <path>", "Socket to connect");
-
 program
     .command("install <plugin>")
     .alias("i")
@@ -16,7 +15,6 @@ program
         console.log("Plugin: %s", args.plugin);
         console.log("Recursive: %s", opts.recursive);
     });
-
 program
     .command("search <keyword> [keywords...]")
     .alias("s")
@@ -26,8 +24,6 @@ program
         console.log("keyword: %s", JSON.stringify(args.keyword));
         console.log("keywords: %s", JSON.stringify(args.keywords));
     });
-
-
 program.parse();
 
 /**
