@@ -21,6 +21,19 @@ const programs: [IProgramWrapper, IProgramDeclaration][]  = [],
       stderr: [IProgramWrapper, (text: string) => void][] = [],
       exits: [IProgramWrapper, (code: number) => void][]  = [];
 
+export function getFullOptionName(option: IOption): string {
+    const long: string  = option.getLong(),
+          short: string = option.getShort();
+    if (!long) {
+        return JSON.stringify("-" + short);
+    }
+    if (!short) {
+        return JSON.stringify("--" + kebabCase(long));
+    }
+    return JSON.stringify("--" + kebabCase(long)) +
+        "(" + JSON.stringify("-" + short) + ")";
+}
+
 export function setExitHandlerForProgram(program: IProgramWrapper, handler: (code: number) => void): void {
     const foundHandler: [IProgramWrapper, (code: number) => void] = exits
             .filter((item: [IProgramWrapper, (code: number) => void]) => item.indexOf(program) === 0)[0] || null;
@@ -280,14 +293,12 @@ export function findOptionByShort<O extends IOption>(short: string, options: O[]
 export function findOptionByLong<O extends IOption>(long: string, options: O[]): O {
     for (const option of options) {
         const value: string = option.getLong(),
-              variants: string[] = [camelCase(value), snakeCase(value), kebabCase(value)]
-                  .reduce((accumulator: string[], value: string) => {
-                      if (value && accumulator.indexOf(value) === -1) {
-                          accumulator.push(value);
-                      }
-                      return accumulator;
-                  }, []);
-        if (variants.indexOf(long) !== -1) {
+              negatives: string[] = (option.getNegativePrefixes() || [])
+                  .map((negative: string) => kebabCase(negative + "-" + value));
+        if (kebabCase(long) === kebabCase(value)) {
+            return option;
+        }
+        if (negatives.indexOf(kebabCase(long)) !== -1) {
             return option;
         }
     }

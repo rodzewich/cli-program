@@ -18,7 +18,7 @@ import {IProgramDeclaration} from "./IProgramDeclaration.ts";
 import camelCase = require("lodash.camelcase");
 import snakeCase = require("lodash.snakecase");
 import kebabCase = require("lodash.kebabcase");
-import {setProgramDeclaration, getProgramDeclaration, addCommandToProgram, getStdoutHandlerForProgram, getStderrHandlerForProgram, getExitHandlerForProgram, showError,
+import {getFullOptionName, setProgramDeclaration, getProgramDeclaration, addCommandToProgram, getStdoutHandlerForProgram, getStderrHandlerForProgram, getExitHandlerForProgram, showError,
     getCountOfRequireArguments, findArgumentByIndex, findCommandByName,
     findCommandByAlias, findOptionByShort, findOptionByLong, showHelp} from "./utils.ts";
 
@@ -173,7 +173,7 @@ export class ProgramWrapper implements IProgramWrapper {
                   matches: string[] = String(args || "")
                       .match(/^\s*(<(?:[a-z][\w-]*)>|\[(?:[a-z][\w-]*)(?:\.\.\.)?\])((?:\s+<(?:[a-z][\w-]*)>|\s\[(?:[a-z][\w-]*)(?:\.\.\.)?\])*)\s*$/i);
             if (matches === null) {
-                throw new Error("Invalid arguments format");
+                throw new Error("Invalid arguments format.");
             }
             if (!declaration) {
                 throw new Error("Program declaration was removed!");
@@ -244,11 +244,11 @@ export class ProgramWrapper implements IProgramWrapper {
                             }
                             suffix += " command";
                         }
-                        throw new Error("You cannot use undeclared " + JSON.stringify(long) + " option" + suffix + ".");
+                        throw new Error("You cannot use undeclared " + JSON.stringify("--" + long) + " option" + suffix + ".");
                     }
                     if (!declaration.isBool() && data.length === 0 ||
                         !declaration.isBool() && data[0].substr(0, 1) === "-") {
-                        throw new Error("Option " + JSON.stringify(declaration.getLong()) + " should be defined.");
+                        throw new Error("Option " + JSON.stringify("--" + declaration.getLong()) + " should be defined.");
                     }
                     if (command) {
                         const value: any = declaration.isBool() ? "true" : data.shift();
@@ -277,7 +277,7 @@ export class ProgramWrapper implements IProgramWrapper {
                             }
                             suffix += " command";
                         }
-                        throw new Error("You cannot use undeclared " + JSON.stringify(long) + " option" + suffix + ".");
+                        throw new Error("You cannot use undeclared " + JSON.stringify("--" + long) + " option" + suffix + ".");
                     }
                     if (command) {
                         commandOpts.push(new OptionValued({
@@ -349,7 +349,7 @@ export class ProgramWrapper implements IProgramWrapper {
                             throw new Error("You cannot use undeclared " + JSON.stringify("-" + short) + " option" + suffix + ".");
                         }
                         if (!declaration.isBool() && !last) {
-                            throw new Error("Option " + JSON.stringify(declaration.getShort()) + " should be defined.");
+                            throw new Error("Option " + JSON.stringify("-" + declaration.getShort()) + " should be defined.");
                         }
                         if (command) {
                             commandOpts.push(new OptionValued({

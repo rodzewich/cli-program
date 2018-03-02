@@ -3,6 +3,8 @@ import {IArgumentDeclaration} from "./IArgumentDeclaration.ts";
 import {ArgumentDeclaration} from "./ArgumentDeclaration.ts";
 import {IOptionDeclaration} from "./IOptionDeclaration.ts";
 import {OptionDeclaration} from "./OptionDeclaration.ts";
+import {getFullOptionName} from "./utils.ts";
+import kebabCase = require("lodash.kebabcase");
 
 export class CommandDeclaration implements ICommandDeclaration {
 
@@ -85,15 +87,20 @@ export class CommandDeclaration implements ICommandDeclaration {
     }
 
     public addOption(option: IOptionDeclaration): void {
+        const long: string  = option.getLong(),
+              short: string = option.getShort(),
+              negatives: string[] = option.getNegativePrefixes() || [];
         for (const item of this._options) {
-            const keys: string[] = [item.getShort(), item.getLong()].filter(Boolean);
-            if (keys.indexOf(option.getShort()) !== -1 ||
-                keys.indexOf(option.getLong()) !== -1) {
-                let optionName: string = JSON.stringify("--" + option.getLong());
-                if (option.getShort()) {
-                    optionName += "(" + JSON.stringify("-" + option.getShort()) + ")";
+            const negative: string[] = item.getNegativePrefixes() || [],
+                  keys: string[] = [item.getShort(), item.getLong(), ...negative.map((prefix: string) => prefix + "-" + item.getLong())].filter(Boolean).map((key: string) => kebabCase(key));
+            if (keys.indexOf(short) !== -1 ||
+                keys.indexOf(kebabCase(long)) !== -1) {
+                throw new Error("You cannot declare not unique " + getFullOptionName(option) + " option.");
+            }
+            for (const negative of negatives) {
+                if (keys.indexOf(kebabCase(negative + "-" + long)) !== -1) {
+                    throw new Error("You cannot declare not unique " + getFullOptionName(option) + " option due to negative prefix.");
                 }
-                throw new Error("You cannot declare not unique " + optionName + " option.");
             }
         }
         this._options.push(option);
