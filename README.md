@@ -11,6 +11,72 @@ The complete solution for node.js command-line interfaces.
 $ npm install cli-program --save
 ```
 
+## Program name
+
+Program name is declared with the `.name(name: string)` method, also serving as documentation for the program name. The program name can be declared anything or skipped. As default value program uses name of executable filename.
+
+```js
+require("cli-program")
+    .name("My Awesome Program")
+    .parse(function () {
+        // bootstrap
+    });
+```
+
+```
+$ program --help
+My Awesome Program
+
+Usage:
+
+  program
+```
+
+## Program description
+
+Program description is declared with the `.description(description: string)` method, also serving as documentation for the program description. The program description can be declared anything or skipped.
+
+```js
+require("cli-program")
+    .name("My Awesome Program")
+    .description("Multi-line detailed description")
+    .parse(function () {
+        // bootstrap
+    });
+```
+
+```
+$ program --help
+My Awesome Program
+
+  Multi-line detailed description
+
+Usage:
+
+  program
+```
+
+## Usage format
+
+Usage format is declared with the `.usage(usage: string)` method, also serving as documentation for the usage format. The usage format can be declared anything or skipped. As default value program automatically generates usage by program declaration.
+
+```js
+require("cli-program")
+    .usage("[options...]")
+    .parse(function () {
+        // bootstrap
+    });
+```
+
+```
+$ program --help
+program
+
+Usage:
+
+  program [options...]
+```
+
 ## Option parsing
 
 Options are defined with the `.option(flags: string, description?: string, defaultValue?: any, negativePrefixes?: string[], preparationFunction?: (value: any) => any)` method, also serving as documentation for the options. The example below parses args and options from `process.argv`.
