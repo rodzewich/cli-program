@@ -443,34 +443,37 @@ export function showHelp(program: IProgramValued, name: string): string {
     }
 
     function showCommands(): string[] {
-        const command: ICommandValued = program.getCommands()[0] || null,
-              commands: ICommandDeclaration[] = program.getDeclaration().getCommands(),
-              content: string[] = [];
-        if (!command) {
-            content.push(colors.bold("Commands:"));
-            content.push("");
-            for (const cmd of commands) {
-                content.push("  " + colors.bold(cmd.getName()) +
-                    (cmd.getAlias() ? " (alias: " + cmd.getAlias() + ")" : "")
-                    + " " + showArguments(cmd.getArguments()) + "\n    " + cmd.getDescription());
-                content.push("");
+        const currentCommand: ICommandValued = program.getCommands()[0] || null,
+              declaredCommands: ICommandDeclaration[] = program.getDeclaration().getCommands(),
+              showContent: string[]               = [];
+        if (!currentCommand && declaredCommands.length !== 0) {
+            showContent.push(colors.bold("Commands:"));
+            showContent.push("");
+            for (const command of declaredCommands) {
+                showContent.push("  " + colors.bold(command.getName()) +
+                    (command.getAlias() ? " (alias: " + command.getAlias() + ")" : "")
+                    + " " + showArguments(command.getArguments()) + "\n    " + command.getDescription());
+                showContent.push("");
             }
         }
-        return content;
+        return showContent;
     }
 
     function showArguments(args: IArgument[]): string {
-        const content: string[] = [];
-        for (const arg of args) {
-            if (arg.isRequired()) {
-                content.push("<" + arg.getName() + ">");
-            } else if (!arg.isSpread()) {
-                content.push("[" + arg.getName() + "]");
+        const showContent: string[] = [];
+        for (const argument of args) {
+            const name: string = argument.getName(),
+                  spread: boolean = argument.isSpread(),
+                  required: boolean = argument.isRequired();
+            if (required) {
+                showContent.push("<" + name + ">");
+            } else if (!spread) {
+                showContent.push("[" + name + "]");
             } else {
-                content.push("[" + arg.getName() + "...]");
+                showContent.push("[" + name + "...]");
             }
         }
-        return content.join(" ");
+        return showContent.join(" ");
     }
 
     function showCommandDescription(): string[] {

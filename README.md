@@ -172,37 +172,6 @@ $ ./examples/pizza --help
 
 ## Examples
 
-```js
-var program = require("cli-program");
-
-program
-  .version("0.1.0")
-  .option("-C, --chdir <path>", "change the working directory")
-  .option("-c, --config <path>", "set config path. defaults to ./deploy.conf")
-  .option("-T, --no-tests", "ignore test hook");
-
-program
-  .command("setup [env]")
-  .description("Run setup commands for all envs")
-  .option("-s, --setup_mode [mode]", "Which setup mode to use")
-  .action(function(args, opts){
-    var mode = opts.setupMode || "normal";
-    var env = args.env || "all";
-    console.log("setup for %s env(s) with %s mode", env, mode);
-  });
-
-program
-  .command("exec <cmd>")
-  .alias("ex")
-  .description("execute the given remote cmd")
-  .option("-e, --exec_mode <mode>", "Which exec mode to use")
-  .action(function(args, opts){
-    console.log("exec "%s" using %s mode", args.cmd, opts.execMode);
-  });
-
-program.parse();
-```
-
 More demos can be found in the [examples](https://github.com/rodzewich/cli-program/tree/master/examples) directory.
 
 ## License
