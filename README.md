@@ -170,22 +170,26 @@ Arguments are declared with the `.arguments(args: string)` method. The example b
 
 ```js
 // declare optional argument
-program.arguments("[optional]");
+require("cli-program")
+    .arguments("[optional]");
 ```
 
 ```js
 // declare optional arguments
-program.arguments("[spread...]");
+require("cli-program")
+    .arguments("[spread...]");
 ```
 
 ```js
 // declare required argument
-program.arguments("<required>");
+require("cli-program")
+    .arguments("<required>");
 ```
 
 ```js
 // combination declare
-program.arguments("<argument> [more...]");
+require("cli-program")
+    .arguments("<argument1> <argument2> [more...]");
 ```
 
 The arguments can be named anything. Angled brackets (e.g. `<required>`) indicate required input. Square brackets (e.g. `[optional]`) indicate optional input.
