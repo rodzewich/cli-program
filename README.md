@@ -13,8 +13,9 @@ $ npm install cli-program --save
 
 ## Content:
 
-- [.name(name)](#name)
-- `.description(string)`
+- [.name(name)](#namename)
+- [.description(description)](#descriptiondescription)
+- [.usage(usage)](#usageusage)
 
 ## .name(name)
 
