@@ -287,6 +287,15 @@ $ ./examples/pizza --help
 
 ```
 
+## Automated --version
+
+The version information is auto-generated based on the information declared via [.version(version)](#versionversion) method. This case shouldn't have any handlers and works automatically. But version should be declared for work.
+
+```
+$ ./examples/pizza --V
+Version: 0.0.1
+```
+
 ## Examples
 
 More demos can be found in the [examples](https://github.com/rodzewich/cli-program/tree/master/examples) directory.
