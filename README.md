@@ -16,7 +16,7 @@ $ npm install cli-program --save
 - [.name(name)](#namename)
 - [.description(description)](#descriptiondescription)
 - [.usage(usage)](#usageusage)
-- [.options(flags)](#optionflags-description-defaultvalue-negativeprefixes-preparationfunction)
+- [.options(flags)](#optionflags)
 - [.version(version)](#versionversion)
 - [.arguments(arguments)](#argumentsarguments)
 - [.command(command)](#commandcommand)
@@ -95,7 +95,7 @@ Usage:
   program [options...]
 ```
 
-## .option(flags, description?, defaultValue?, negativePrefixes?, preparationFunction?)
+## .option(flags)
 
 Options are defined with the `.option(flags: string, description?: string, defaultValue?: any, negativePrefixes?: string[], preparationFunction?: (value: any) => any)` method, also serving as documentation for the options. The example below parses args and options from `process.argv`.
 
