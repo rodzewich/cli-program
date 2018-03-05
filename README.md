@@ -168,7 +168,7 @@ The version flags can be named anything.
 
 ## .arguments(arguments)
 
-Arguments are defined with the `arguments(args: string)` method. The example below parses args and options from `process.argv`.
+Arguments are defined with the `.arguments(args: string)` method. The example below parses args and options from `process.argv`.
 
 ```js
 // declare optional argument
@@ -190,7 +190,7 @@ program.arguments("<required>");
 program.arguments("<argument> [more...]");
 ```
 
-The arguments can be named anything.
+The arguments can be named anything. Angled brackets (e.g. `<required>`) indicate required input. Square brackets (e.g. `[optional]`) indicate optional input.
 
 ```js
 require("cli-program")
@@ -230,21 +230,6 @@ program.parse()
 ```
 
 A command's options are validated when the command is used. Any unknown options will be reported as an error.
-
-## Specify the argument syntax
-
-```js
-var program = require("cli-program");
-program
-  .version("0.0.1")
-  .arguments("<cmd> [env]")
-  .parse(function (args, opts) {
-    console.log("command:", args.cmd);
-    console.log("environment:", args.env || "no environment given");
-  });
-```
-
-Angled brackets (e.g. `<cmd>`) indicate required input. Square brackets (e.g. `[env]`) indicate optional input.
 
 ## Git-style sub-commands
 
