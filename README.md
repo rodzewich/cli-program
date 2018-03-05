@@ -204,8 +204,6 @@ require("../build/index")
 
 ```js
 require("../build/index")
-    // Program have 1 required argument
-    // and 1 optional argument.
     .arguments("<arg1> [arg2]")
     .parse(function (args) {
         console.log("args: %s", JSON.stringify(args));
