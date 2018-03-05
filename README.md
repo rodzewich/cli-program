@@ -168,7 +168,7 @@ The version flags can be named anything.
 
 ## .arguments(arguments)
 
-Arguments are defined with the `.arguments(args: string)` method. The example below parses args and options from `process.argv`.
+Arguments are declared with the `.arguments(args: string)` method. The example below parses args and options from `process.argv`.
 
 ```js
 // declare optional argument
