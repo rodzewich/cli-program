@@ -13,7 +13,7 @@ $ npm install cli-program --save
 
 ## Content:
 
-- (.name)[#name]
+- [.name(name)](#name)
 - `.description(string)`
 
 ## .name(name)
