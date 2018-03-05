@@ -138,7 +138,7 @@ program
     });
 ```
 
-## Version option
+## .version(version)
 
 Calling the `version` implicitly adds the `-V` and `--version` options to the program.
 When either of these options is present, the command prints the version number and exits.
