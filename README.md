@@ -11,7 +11,7 @@ The complete solution for node.js command-line interfaces.
 $ npm install cli-program --save
 ```
 
-## Content:
+## Content
 
 - [.name(name)](#namename)
 - [.description(description)](#descriptiondescription)
@@ -216,7 +216,7 @@ require("cli-program")
 // args: {"arg1":"value1","arg2":"value2"}
 ```
 
-## Command-specific options
+## Command-specific .options(flags)
 
 You can attach options to a command.
 
