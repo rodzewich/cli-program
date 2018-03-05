@@ -100,8 +100,7 @@ Usage:
 Options are defined with the `.option(flags: string, description?: string, defaultValue?: any, negativePrefixes?: string[], preparationFunction?: (value: any) => any)` method, also serving as documentation for the options. The example below parses args and options from `process.argv`.
 
 ```js
-var program = require("cli-program");
-program
+require("cli-program")
     .version("0.1.0")
     .option("-p, --peppers", "Add peppers")
     .option("-P, --pineapple", "Add pineapple")
@@ -127,8 +126,7 @@ Short flags may be passed as a single arg, for example `-abc` is equivalent to `
 Note that multi-word options starting with `--no` prefix negate the boolean value of the following word. For example, `--no-sauce` sets the value of `args.sauce` to false.
 
 ```js
-var program = require("cli-program");
-program
+require("cli-program")
     .version("0.1.0")
     .option("-p, --password <string>", "Password to connect", null, ["no", "without"])
     .parse(function (args, opts) {
@@ -153,17 +151,15 @@ $ ./examples/pizza -V
 If you want your program to respond to the `-v` option instead of the `-V` option, simply pass custom flags to the `version` method using the same syntax as the `option` method:
 
 ```js
-var program = require("cli-program");
-program
-  .version("0.0.1", "-v, --version");
+require("cli-program")
+    .version("0.0.1", "-v, --version");
 ```
 
 or with special description:
 
 ```js
-var program = require("cli-program");
-program
-  .version("0.0.1", "-v, --version", "Special description");
+require("cli-program")
+    .version("0.0.1", "-v, --version", "Special description");
 ```
 
 The version flags can be named anything.
@@ -221,14 +217,13 @@ require("cli-program")
 You can attach options to a command.
 
 ```js
-var program = require("cli-program");
-program
-  .command("rm <dir>") // comand with required argument
-  .option("-r, --recursive", "Remove recursively")
-  .action(function (args, opts) {
-    console.log("remove " + args.dir + (opts.recursive ? " recursively" : ""))
-  })
-program.parse()
+require("cli-program")
+    .command("rm <dir>") // comand with required argument
+    .option("-r, --recursive", "Remove recursively")
+    .action(function (args, opts) {
+        console.log("remove " + args.dir + (opts.recursive ? " recursively" : ""))
+    })
+    .parse()
 ```
 
 A command's options are validated when the command is used. Any unknown options will be reported as an error.
