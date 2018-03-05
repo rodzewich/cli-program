@@ -20,6 +20,11 @@ $ npm install cli-program --save
 - [.version(version)][#versionversion]
 - [.arguments(arguments)][#argumentsarguments]
 - [.command(command)][#commandcommand]
+  - action(action?)
+  - description
+  - alias
+  - option
+  - usage
 - [.parse(action?)][#parseparse]
 
 ## .name(name)
