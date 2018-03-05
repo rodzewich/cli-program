@@ -10,4 +10,5 @@ export interface IOption {
     getDefaultValue(): string;
     getNegativePrefixes(): string[];
     getPreparationFunction(): (value: string) => any;
+    equal(option: string|IOption): boolean;
 }

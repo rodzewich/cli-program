@@ -1,28 +1,44 @@
+import {IOption} from "./IOption.ts";
 import {IOptionValued} from "./IOptionValued.ts";
 import {IOptionDeclaration} from "./IOptionDeclaration.ts";
 import camelCase = require("lodash.camelcase");
+import kebabCase = require("lodash.kebabcase");
 
 export class OptionValued implements IOptionValued {
 
     private _declaration: IOptionDeclaration = null;
 
+    private _original: string = null;
+
     private _value: any = null;
 
-    constructor(options:{declaration: IOptionDeclaration, value: any}) {
-        this._declaration = options.declaration;
-        this._value = options.value;
+    constructor(options:{declaration: IOptionDeclaration, original: string}) {
+        this._declaration = options.declaration || null;
+        this._original = options.original || null;
     }
 
     public getFlags(): string {
-        return this.getDeclaration().getFlags();
+        const declaration: IOptionDeclaration = this.getDeclaration();
+        if (!declaration) {
+            throw new Error("Option declaration was removed!");
+        }
+        return declaration.getFlags();
     }
 
     public getShort(): string {
-        return this.getDeclaration().getShort();
+        const declaration: IOptionDeclaration = this.getDeclaration();
+        if (!declaration) {
+            throw new Error("Option declaration was removed!");
+        }
+        return declaration.getShort();
     }
 
     public getLong(): string {
-        return this.getDeclaration().getLong();
+        const declaration: IOptionDeclaration = this.getDeclaration();
+        if (!declaration) {
+            throw new Error("Option declaration was removed!");
+        }
+        return declaration.getLong();
     }
 
     public getAttribute(): string {
@@ -35,35 +51,91 @@ export class OptionValued implements IOptionValued {
     }
 
     public getDescription(): string {
-        return this.getDeclaration().getDescription();
+        const declaration: IOptionDeclaration = this.getDeclaration();
+        if (!declaration) {
+            throw new Error("Option declaration was removed!");
+        }
+        return declaration.getDescription();
     }
 
     public isRequired(): boolean {
-        return this.getDeclaration().isRequired();
+        const declaration: IOptionDeclaration = this.getDeclaration();
+        if (!declaration) {
+            throw new Error("Option declaration was removed!");
+        }
+        return declaration.isRequired();
     }
 
     public isOptional(): boolean {
-        return this.getDeclaration().isOptional();
+        const declaration: IOptionDeclaration = this.getDeclaration();
+        if (!declaration) {
+            throw new Error("Option declaration was removed!");
+        }
+        return declaration.isOptional();
     }
 
     public isBool(): boolean {
-        return this.getDeclaration().isBool();
+        const declaration: IOptionDeclaration = this.getDeclaration();
+        if (!declaration) {
+            throw new Error("Option declaration was removed!");
+        }
+        return declaration.isBool();
     }
 
     public getType(): string {
-        return this._declaration.getType();
+        const declaration: IOptionDeclaration = this.getDeclaration();
+        if (!declaration) {
+            throw new Error("Option declaration was removed!");
+        }
+        return declaration.getType();
     }
 
     public getDefaultValue(): any {
-        return this.getDeclaration().getDefaultValue();
+        const declaration: IOptionDeclaration = this.getDeclaration();
+        if (!declaration) {
+            throw new Error("Option declaration was removed!");
+        }
+        return declaration.getDefaultValue();
     }
 
     public getNegativePrefixes(): string[] {
-        return this.getDeclaration().getNegativePrefixes();
+        const declaration: IOptionDeclaration = this.getDeclaration();
+        if (!declaration) {
+            throw new Error("Option declaration was removed!");
+        }
+        return declaration.getNegativePrefixes();
     }
 
-    public getPreparationFunction(): (value: any) => any {
-        return this.getDeclaration().getPreparationFunction();
+    public getPreparationFunction(): (value: string) => any {
+        const declaration: IOptionDeclaration = this.getDeclaration();
+        if (!declaration) {
+            throw new Error("Option declaration was removed!");
+        }
+        return declaration.getPreparationFunction();
+    }
+
+    public equal(option: string|IOption): boolean {
+        const declaration: IOptionDeclaration = this.getDeclaration();
+        if (!declaration) {
+            throw new Error("Option declaration was removed!");
+        }
+        return declaration.equal(option);
+    }
+
+    public getOriginal(): string {
+        return this._original;
+    }
+
+    public isNegative(): boolean {
+        const original: string = this.getOriginal() || "";
+        return (
+            original &&
+            original.substr(0, 2) === "--" &&
+            (this.getNegativePrefixes() || [])
+                .map((prefix: string) => kebabCase(prefix) + "-" + kebabCase(this.getLong()))
+                .filter((long: string) => long === kebabCase(original.substr(2)))
+                .length !== 0
+        );
     }
 
     public getDeclaration(): IOptionDeclaration {
@@ -72,6 +144,13 @@ export class OptionValued implements IOptionValued {
 
     public getValue(): any {
         return this._value;
+    }
+
+    public setValue(value: any): void {
+        this._value = null;
+        if (typeof value !== "undefined") {
+            this._value = value;
+        }
     }
 
 }

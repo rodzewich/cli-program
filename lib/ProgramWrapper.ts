@@ -246,22 +246,30 @@ export class ProgramWrapper implements IProgramWrapper {
                         }
                         throw new Error("You cannot use undeclared " + JSON.stringify("--" + long) + " option" + suffix + ".");
                     }
-                    if (!declaration.isBool() && data.length === 0 ||
-                        !declaration.isBool() && data[0].substr(0, 1) === "-") {
+                    const option: IOptionValued = new OptionValued({
+                        declaration,
+                        original : "--" + long
+                    });
+                    if (!option.isNegative() && !declaration.isBool() && data.length === 0 ||
+                        !option.isNegative() && !declaration.isBool() && data[0].substr(0, 1) === "-") {
                         throw new Error("Option " + JSON.stringify("--" + declaration.getLong()) + " should be defined.");
                     }
                     if (command) {
-                        const value: any = declaration.isBool() ? "true" : data.shift();
-                        commandOpts.push(new OptionValued({
-                            declaration,
-                            value : preparationFunction ? preparationFunction(value) : value
-                        }));
+                        if (option.isNegative()) {
+                            option.setValue(false);
+                        } else {
+                            const value: any = declaration.isBool() ? "true" : data.shift();
+                            option.setValue(preparationFunction ? preparationFunction(value) : value)
+                        }
+                        commandOpts.push(option);
                     } else {
-                        const value: any = declaration.isBool() ? "true" : data.shift();
-                        programOpts.push(new OptionValued({
-                            declaration,
-                            value : preparationFunction ? preparationFunction(value) : value
-                        }));
+                        if (option.isNegative()) {
+                            option.setValue(false);
+                        } else {
+                            const value: any = declaration.isBool() ? "true" : data.shift();
+                            option.setValue(preparationFunction ? preparationFunction(value) : value)
+                        }
+                        programOpts.push(option);
                     }
                 } else if (/^--[a-z][\w-]*=/i.test(item)) {
                     const long: string  = item.substr(2, item.indexOf('=') - 2),
@@ -280,15 +288,19 @@ export class ProgramWrapper implements IProgramWrapper {
                         throw new Error("You cannot use undeclared " + JSON.stringify("--" + long) + " option" + suffix + ".");
                     }
                     if (command) {
-                        commandOpts.push(new OptionValued({
+                        const option: IOptionValued = new OptionValued({
                             declaration,
-                            value : preparationFunction ? preparationFunction(value) : value
-                        }));
+                            original : "--" + long
+                        });
+                        option.setValue(preparationFunction ? preparationFunction(value) : value);
+                        commandOpts.push(option);
                     } else {
-                        programOpts.push(new OptionValued({
+                        const option: IOptionValued = new OptionValued({
                             declaration,
-                            value : preparationFunction ? preparationFunction(value) : value
-                        }));
+                            original : "--" + long
+                        });
+                        option.setValue(preparationFunction ? preparationFunction(value) : value);
+                        programOpts.push(option);
                     }
                 } else if (/^-[a-z]+$/i.test(item)) {
                     const options: string[] = item.substr(1).split(""),
@@ -316,16 +328,20 @@ export class ProgramWrapper implements IProgramWrapper {
                         }
                         if (command) {
                             const value: any = declaration.isBool() ? "true" : data.shift();
-                            commandOpts.push(new OptionValued({
+                            const option: IOptionValued = new OptionValued({
                                 declaration,
-                                value : preparationFunction ? preparationFunction(value) : value
-                            }));
+                                original : "-" + short
+                            });
+                            option.setValue(preparationFunction ? preparationFunction(value) : value);
+                            commandOpts.push(option);
                         } else {
                             const value: any = declaration.isBool() ? "true" : data.shift();
-                            programOpts.push(new OptionValued({
+                            const option: IOptionValued = new OptionValued({
                                 declaration,
-                                value : preparationFunction ? preparationFunction(value) : value
-                            }));
+                                original : "-" + short
+                            });
+                            option.setValue(preparationFunction ? preparationFunction(value) : value);
+                            programOpts.push(option);
                         }
                     }
                 } else if (/^-[a-z]+=/i.test(item)) {
@@ -352,15 +368,19 @@ export class ProgramWrapper implements IProgramWrapper {
                             throw new Error("Option " + JSON.stringify("-" + declaration.getShort()) + " should be defined.");
                         }
                         if (command) {
-                            commandOpts.push(new OptionValued({
+                            const option: IOptionValued = new OptionValued({
                                 declaration,
-                                value : preparationFunction ? preparationFunction(value) : value
-                            }));
+                                original : "-" + short
+                            });
+                            option.setValue(preparationFunction ? preparationFunction(value) : value);
+                            commandOpts.push(option);
                         } else {
-                            programOpts.push(new OptionValued({
+                            const option: IOptionValued = new OptionValued({
                                 declaration,
-                                value : preparationFunction ? preparationFunction(value) : value
-                            }));
+                                original : "-" + short
+                            });
+                            option.setValue(preparationFunction ? preparationFunction(value) : value);
+                            programOpts.push(option);
                         }
                     }
                 } else if (!command && program.getCommands().length !== 0) {
@@ -430,10 +450,12 @@ export class ProgramWrapper implements IProgramWrapper {
                         }
                         throw new Error("You should specify required option " + optionName + ".");
                     }
-                    programOpts.push(new OptionValued({
+                    const option: IOptionValued = new OptionValued({
                         declaration,
-                        value: declaration.getPreparationFunction()(declaration.getDefaultValue())
-                    }));
+                        original : ""
+                    });
+                    option.setValue(declaration.getPreparationFunction()(declaration.getDefaultValue()));
+                    programOpts.push(option);
                 }
             }
 
@@ -455,10 +477,12 @@ export class ProgramWrapper implements IProgramWrapper {
                             }
                             throw new Error("You should specify required option " + optionName + " in command " + commandName + ".");
                         }
-                        commandOpts.push(new OptionValued({
+                        const option: IOptionValued = new OptionValued({
                             declaration,
-                            value: declaration.getDefaultValue()
-                        }));
+                            original : ""
+                        });
+                        option.setValue(declaration.getPreparationFunction()(declaration.getDefaultValue()));
+                        commandOpts.push(option);
                     }
                 }
             }

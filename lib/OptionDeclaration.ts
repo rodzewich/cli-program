@@ -1,3 +1,4 @@
+import {IOption} from "./IOption.ts";
 import {IOptionDeclaration} from "./IOptionDeclaration.ts";
 import kebabCase = require("lodash.kebabcase");
 
@@ -22,6 +23,7 @@ export class OptionDeclaration implements IOptionDeclaration {
     private _preparationFunction: (value: string) => any = null;
 
     constructor(options:{flags: string, description?: string, defaultValue?: any, negativePrefixes?: string[], preparationFunction?: (value: any) => any}) {
+        // todo: Error when define negative prefixes without long
         let flags: string = String(options.flags || ""),
             description: string = options.description,
             defaultValue: any = options.defaultValue,
@@ -173,7 +175,7 @@ export class OptionDeclaration implements IOptionDeclaration {
     }
 
     public getNegativePrefixes(): string[] {
-        return this._negativePrefixes;
+        return this._negativePrefixes || [];
     }
 
     public setPreparationFunction(preparationFunction: (value: string) => any): void {
@@ -203,6 +205,59 @@ export class OptionDeclaration implements IOptionDeclaration {
             }
         }
         return this._preparationFunction || defaultPreparationFunction;
+    }
+
+    public equal(option: string|IOption): boolean {
+        if (option) {
+            if (typeof option === "string") {
+                return [
+                        kebabCase(this.getShort()),
+                        kebabCase(this.getLong()),
+                        ...this.getNegativePrefixes()
+                            .map((prefix: string) => prefix + "-" + kebabCase(this.getLong()))
+                            .filter(Boolean)
+                    ].indexOf(kebabCase(option as string)) !== -1;
+            } else {
+                return (
+                    this.getShort() === option.getShort() ||
+                    [
+                        kebabCase(option.getLong()),
+                        ...option.getNegativePrefixes()
+                            .map((prefix: string) => prefix + "-" + kebabCase(option.getLong()))
+
+                    ]
+                        .filter(Boolean)
+                        .some((long: string) => {
+                            return [
+                                    kebabCase(this.getLong()),
+                                    ...this.getNegativePrefixes()
+                                        .map((prefix: string) => prefix + "-" + kebabCase(this.getLong()))
+
+                                ]
+                                    .filter(Boolean)
+                                    .indexOf(long) !== -1;
+                        }) ||
+                    [
+                        kebabCase(this.getLong()),
+                        ...this.getNegativePrefixes()
+                            .map((prefix: string) => prefix + "-" + kebabCase(this.getLong()))
+
+                    ]
+                        .filter(Boolean)
+                        .some((long: string) => {
+                            return [
+                                    kebabCase(option.getLong()),
+                                    ...option.getNegativePrefixes()
+                                        .map((prefix: string) => prefix + "-" + kebabCase(option.getLong()))
+
+                                ]
+                                    .filter(Boolean)
+                                    .indexOf(long) !== -1;
+                        })
+                );
+            }
+        }
+        return false;
     }
 
 }

@@ -9,15 +9,13 @@ var ProgramWrapper = require("../build/index-test").ProgramWrapper;
 
 describe("Negative options", function () {
 
-    /*it("", function (done) {
+    it("", function (done) {
         new ProgramWrapper()
             .option("-O, --option <string>", null, null, ["no"])
-            .parse(function (args) {
-                expect(args).to.have.property("requiredArgument1", "argument1");
-                expect(args).to.have.property("requiredArgument2", "argument2");
-                expect(args).to.have.property("optionalArgument", null);
+            .parse(function (args, opts) {
+                expect(opts).to.have.property("option", false);
                 done();
             }, [null, "program", "--no-option"]);
-    });*/
+    });
 
 });
