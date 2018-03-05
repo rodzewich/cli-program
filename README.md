@@ -16,6 +16,11 @@ $ npm install cli-program --save
 - [.name(name)](#namename)
 - [.description(description)](#descriptiondescription)
 - [.usage(usage)](#usageusage)
+- [.options(flags)](#optionflags-description-defaultvalue-negativeprefixes-preparationfunction)
+- [.version(version)][#versionversion]
+- [.arguments(arguments)][#argumentsarguments]
+- [.command(command)][#commandcommand]
+- [.parse(action?)][#parseparse]
 
 ## .name(name)
 
