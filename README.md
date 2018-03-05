@@ -166,7 +166,7 @@ program
 
 The version flags can be named anything.
 
-## Argument parsing
+## .arguments(arguments)
 
 Arguments are defined with the `arguments(args: string)` method. The example below parses args and options from `process.argv`.
 
@@ -191,6 +191,21 @@ program.arguments("<argument> [more...]");
 ```
 
 The arguments can be named anything.
+
+```js
+"use strict";
+require("../build/index")
+    // Program have 1 required argument
+    // and more optional arguments.
+    .arguments("<arg1> [args...]")
+    .parse(function (args) {
+        console.log("args: %s", JSON.stringify(args));
+    });
+/**
+ * $ node ./examples/arguments1.js value1 value2 value3
+ * args: {"arg1":"value1","args":["value2","value3"]}
+ */
+```
 
 ## Command-specific options
 
