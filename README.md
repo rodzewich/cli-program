@@ -26,6 +26,8 @@ $ npm install cli-program --save
   - option
   - usage
 - [.parse(action?)](#parseparse)
+- [Automated --help](#automated---help)
+- [Automated --version](#automated---version)
 
 ## .name(name)
 
