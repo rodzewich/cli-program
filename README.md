@@ -193,24 +193,24 @@ program.arguments("<argument> [more...]");
 The arguments can be named anything.
 
 ```js
-require("../build/index")
+require("cli-program")
     .arguments("<arg1> [args...]")
     .parse(function (args) {
         console.log("args: %s", JSON.stringify(args));
     });
-// $ node ./examples/arguments1.js value1 value2 value3
+// $ node path/to/program value1 value2 value3
 // args: {"arg1":"value1","args":["value2","value3"]}
 ```
 
 ```js
-require("../build/index")
+require("cli-program")
     .arguments("<arg1> [arg2]")
     .parse(function (args) {
         console.log("args: %s", JSON.stringify(args));
     });
-// $ node ./examples/arguments1.js value1
+// $ node path/to/program value1
 // args: {"arg1":"value1","arg2":null}
-// $ node ./examples/arguments1.js value1 value2
+// $ node path/to/program value1 value2
 // args: {"arg1":"value1","arg2":"value2"}
 ```
 
