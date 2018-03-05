@@ -271,21 +271,22 @@ If the program is designed to be installed globally, make sure the executables h
 
 ```
 $ ./examples/pizza --help
+pizza
 
-   Usage: pizza [options]
+Usage:
 
-   An application for pizzas ordering
+  pizza [options...]
 
-   Options:
+Options:
 
-     -h, --help           output usage information
-     -V, --version        output the version number
-     -p, --peppers        Add peppers
-     -P, --pineapple      Add pineapple
-     -b, --bbq            Add bbq sauce
-     -c, --cheese <type>  Add the specified type of cheese [marble]
-     -C, --no-cheese      You do not want any cheese
-
+  -h, --help                   Show help
+  --no-color,
+  --color [value=null]         Disable/enable output colors
+  -V, --version                Show version.
+  -p, --peppers                Add peppers
+  -P, --pineapple              Add pineapple
+  -b, --bbq-sauce              Add bbq sauce
+  -c, --cheese [type="marble"] Add the specified type of cheese [marble]
 ```
 
 ## Automated --version
