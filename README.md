@@ -11,7 +11,12 @@ The complete solution for node.js command-line interfaces.
 $ npm install cli-program --save
 ```
 
-## Program name
+## Content:
+
+- (`.name(string)`)[#name]
+- `.description(string)`
+
+## .name(name)
 
 Program name is declared with the `.name(name: string)` method, also serving as documentation for the program name. The program name can be declared anything or skipped. As default value program uses name of executable filename.
 
@@ -32,7 +37,7 @@ Usage:
   program
 ```
 
-## Program description
+## .description(description)
 
 Program description is declared with the `.description(description: string)` method, also serving as documentation for the program description. The program description can be declared anything or skipped.
 
@@ -56,7 +61,7 @@ Usage:
   program
 ```
 
-## Usage format
+## .usage(usage)
 
 Usage format is declared with the `.usage(usage: string)` method, also serving as documentation for the usage format. The usage format can be declared anything or skipped. As default value program automatically generates usage by program declaration.
 
@@ -77,7 +82,7 @@ Usage:
   program [options...]
 ```
 
-## Option parsing
+## .option(flags, description?, defaultValue?, negativePrefixes?, preparationFunction?)
 
 Options are defined with the `.option(flags: string, description?: string, defaultValue?: any, negativePrefixes?: string[], preparationFunction?: (value: any) => any)` method, also serving as documentation for the options. The example below parses args and options from `process.argv`.
 
