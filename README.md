@@ -241,6 +241,8 @@ require("cli-program")
     .parse()
 ```
 
+A command's options are validated when the command is used. Any unknown options will be reported as an error.
+
 ### Command-specific .description(description)
 
 You can attach description to a command.
@@ -282,8 +284,6 @@ require("cli-program")
     })
     .parse()
 ```
-
-A command's options are validated when the command is used. Any unknown options will be reported as an error.
 
 ## Git-style sub-commands
 
