@@ -27,11 +27,11 @@ $ npm install cli-program --save
   - [Arguments declaration format](#arguments-declaration-format)
 - [.command(command)](#commandcommand)
   - [Command declaration format](#command-declaration-format)
-  - [Command-specific .action(action)](#command-specific-actionaction)
-  - [Command-specific .description(description)](#command-specific-descriptiondescription)
-  - [Command-specific .alias(alias)](#command-specific-aliasalias)
-  - [Command-specific .option(flags)](#command-specific-optionsflags)
-  - [Command-specific .usage(usage)](#command-specific-usageusage)
+  - [Command-specific method .action(action)](#command-specific-method-actionaction)
+  - [Command-specific method .description(description)](#command-specific-method-descriptiondescription)
+  - [Command-specific method .alias(alias)](#command-specific-method-aliasalias)
+  - [Command-specific method .option(flags)](#command-specific-method-optionsflags)
+  - [Command-specific method .usage(usage)](#command-specific-method-usageusage)
 - [.parse(action?)](#parseparse)
 - [Automated --help](#automated---help)
 - [Automated --version](#automated---version)
@@ -219,7 +219,7 @@ require("cli-program")
 
 ### Command declaration format
 
-### Command-specific .action(action)
+### Command-specific method .action(action)
 
 You can attach handler to a command.
 
@@ -232,7 +232,7 @@ require("cli-program")
     .parse()
 ```
 
-### Command-specific .options(flags)
+### Command-specific method .options(flags)
 
 You can attach options to a command.
 
@@ -248,7 +248,7 @@ require("cli-program")
 
 A command's options are validated when the command is used. Any unknown options will be reported as an error.
 
-### Command-specific .description(description)
+### Command-specific method .description(description)
 
 You can attach description to a command.
 
@@ -262,7 +262,7 @@ require("cli-program")
     .parse()
 ```
 
-### Command-specific .alias(alias)
+### Command-specific method .alias(alias)
 
 You can attach alias to a command.
 
@@ -276,7 +276,7 @@ require("cli-program")
     .parse()
 ```
 
-### Command-specific .usage(usage)
+### Command-specific method .usage(usage)
 
 You can attach usage to a command.
 
