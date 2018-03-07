@@ -249,7 +249,9 @@ export class ProgramWrapper implements IProgramWrapper {
                     if (!parsedOption.isNegative() && !declaration.isBool() && data.length === 0 ||
                         !parsedOption.isNegative() && !declaration.isBool() && data[0].substr(0, 1) === "-") {
                         if (parsedError === null) {
-                            parsedError = new Error("Option " + JSON.stringify("--" + declaration.getLong()) + " should be defined.");
+                            parsedError = new Error("You cannot use option " + declaration.getName() +
+                                (declaredCommand ? " in " + declaredCommand.getFull() + " command" : "") +
+                                " without value.");
                         }
                         continue;
                     }
@@ -276,16 +278,9 @@ export class ProgramWrapper implements IProgramWrapper {
                           declaration: IOptionDeclaration = (declaredCommand || declaredProgram).getOptions().findByLong(long),
                           preparationFunction: (value: any) => any = declaration ? declaration.getPreparationFunction() || null : null;
                     if (declaration === null) {
-                        let suffix: string = "";
-                        if (declaredCommand) {
-                            suffix = " in " + JSON.stringify(declaredCommand.getName());
-                            if (declaredCommand.getAlias()) {
-                                suffix += "(" + JSON.stringify(declaredCommand.getAlias()) + ")";
-                            }
-                            suffix += " command";
-                        }
                         if (parsedError === null) {
-                            parsedError = new Error("You cannot use undeclared " + JSON.stringify("--" + long) + " option" + suffix + ".");
+                            parsedError = new Error("You cannot use undeclared " + JSON.stringify("--" + long) + " option" +
+                                (declaredCommand ? " in " + declaredCommand.getFull() + " command." : "."));
                         }
                         continue;
                     }
@@ -313,16 +308,9 @@ export class ProgramWrapper implements IProgramWrapper {
                               declaration: IOptionDeclaration = (declaredCommand || declaredProgram).getOptions().findByShort(short),
                               preparationFunction: (value: any) => any = declaration ? declaration.getPreparationFunction() || null : null;
                         if (declaration === null) {
-                            let suffix: string = "";
-                            if (declaredCommand) {
-                                suffix = " in " + JSON.stringify(declaredCommand.getName());
-                                if (declaredCommand.getAlias()) {
-                                    suffix += "(" + JSON.stringify(declaredCommand.getAlias()) + ")";
-                                }
-                                suffix += " command";
-                            }
                             if (parsedError === null) {
-                                parsedError = new Error("You cannot use undeclared " + JSON.stringify("-" + short) + " option" + suffix + ".");
+                                parsedError = new Error("You cannot use undeclared " + JSON.stringify("-" + short) + " option" +
+                                    (declaredCommand ? " in " + declaredCommand.getFull() + " command." : "."));
                             }
                             continue;
                         }
@@ -330,7 +318,9 @@ export class ProgramWrapper implements IProgramWrapper {
                             !declaration.isBool() && data.length === 0 ||
                             !declaration.isBool() && data[0].substr(0, 1) === "-") {
                             if (parsedError === null) {
-                                parsedError = new Error("Option " + JSON.stringify("-" + declaration.getShort()) + " should be defined.");
+                                parsedError = new Error("You cannot use option " + declaration.getName() +
+                                    (declaredCommand ? " in " + declaredCommand.getFull() + " command" : "") +
+                                    " without value.");
                             }
                             continue;
                         }
@@ -362,22 +352,17 @@ export class ProgramWrapper implements IProgramWrapper {
                               declaration: IOptionDeclaration = (declaredCommand || declaredProgram).getOptions().findByShort(short),
                               preparationFunction: (value: any) => any = declaration ? declaration.getPreparationFunction() || null : null;
                         if (declaration === null) {
-                            let suffix: string = "";
-                            if (declaredCommand) {
-                                suffix = " in " + JSON.stringify(declaredCommand.getName());
-                                if (declaredCommand.getAlias()) {
-                                    suffix += "(" + JSON.stringify(declaredCommand.getAlias()) + ")";
-                                }
-                                suffix += " command";
-                            }
                             if (parsedError === null) {
-                                parsedError = new Error("You cannot use undeclared " + JSON.stringify("-" + short) + " option" + suffix + ".");
+                                parsedError = new Error("You cannot use undeclared " + JSON.stringify("-" + short) + " option" +
+                                    (declaredCommand ? " in " + declaredCommand.getFull() + " command." : "."));
                             }
                             continue;
                         }
                         if (!declaration.isBool() && !last) {
                             if (parsedError === null) {
-                                parsedError = new Error("Option " + JSON.stringify("-" + declaration.getShort()) + " should be defined.");
+                                parsedError = new Error("You cannot use option " + declaration.getName() +
+                                    (declaredCommand ? " in " + declaredCommand.getFull() + " command" : "") +
+                                    " without value.");
                             }
                             continue;
                         }
@@ -434,7 +419,7 @@ export class ProgramWrapper implements IProgramWrapper {
             const isProgramHelpMode: boolean = parsedProgram.getOptions().findByLong("help") !== null,
                   isCommandHelpMode: boolean = parsedProgram.getCommand() !== null && parsedProgram.getCommand().getOptions().findByLong("help") !== null,
                   numberOfProgramRequireArguments: number = declaredProgram.getArguments().getCountOfRequired(),
-                  numberOfCommandRequireArguments: number = parsedProgram.getCommand() ? parsedProgram.getCommand().getArguments().getCountOfRequired() : null;
+                  numberOfCommandRequireArguments: number = parsedProgram.getCommand() ? parsedProgram.getCommand().getDeclaration().getArguments().getCountOfRequired() : null;
 
             // show parsed errors
             if (parsedError !== null &&
@@ -491,7 +476,7 @@ export class ProgramWrapper implements IProgramWrapper {
                             parsedProgram.getCommand().getOptions().findByShort(declaredOption.getShort()) === null &&
                             !isProgramHelpMode && !isCommandHelpMode) {
                             if (!declaredOption.isBool() && declaredOption.isRequired()) {
-                                throw new Error("You should specify required option " + declaredOption.getName() + " in command " + parsedProgram.getCommand().getFull() + ".");
+                                throw new Error("You should specify required option " + declaredOption.getName() + " in " + parsedProgram.getCommand().getFull() + " command.");
                             }
                             const defaultOption: IOptionValued = new OptionValued({
                                 declaration: declaredOption,
@@ -507,11 +492,11 @@ export class ProgramWrapper implements IProgramWrapper {
             if (!declaredProgram.getArguments().isEmpty()) {
                 declaredProgram
                     .getArguments()
-                    .forEach((declaration: IArgumentDeclaration) => {
-                        const args: IListValuedArguments = parsedProgram.getArguments();
-                        if (!args.findByName(declaration.getName())) {
-                            args.addArgument(new ArgumentValued({
-                                declaration, value: null
+                    .forEach((declaredArgument: IArgumentDeclaration) => {
+                        const parsedArguments: IListValuedArguments = parsedProgram.getArguments();
+                        if (parsedArguments.findByName(declaredArgument.getName()) === null) {
+                            parsedArguments.addArgument(new ArgumentValued({
+                                declaration: declaredArgument, value: null
                             }));
                         }
                     });
@@ -524,11 +509,11 @@ export class ProgramWrapper implements IProgramWrapper {
                     .getCommand()
                     .getDeclaration()
                     .getArguments()
-                    .forEach((declaration: IArgumentDeclaration) => {
-                        const args: IListValuedArguments = parsedProgram.getCommand().getArguments();
-                        if (!args.findByName(declaration.getName())) {
-                            args.addArgument(new ArgumentValued({
-                                declaration, value: null
+                    .forEach((declaredArgument: IArgumentDeclaration) => {
+                        const parsedArguments: IListValuedArguments = parsedProgram.getCommand().getArguments();
+                        if (!parsedArguments.findByName(declaredArgument.getName())) {
+                            parsedArguments.addArgument(new ArgumentValued({
+                                declaration: declaredArgument, value: null
                             }));
                         }
                     });
@@ -563,6 +548,7 @@ export class ProgramWrapper implements IProgramWrapper {
                 }
                 const args: any = {},
                       opts: any = {};
+                // preparation of program options
                 parsedProgram
                     .getOptions()
                     .forEach((parsedOption: IOptionValued) => {
@@ -570,12 +556,13 @@ export class ProgramWrapper implements IProgramWrapper {
                             opts[parsedOption.getAttribute()] = parsedOption.getValue();
                         }
                     });
+                // preparation of program arguments
                 parsedProgram
                     .getArguments()
-                    .forEach((argument: IArgumentValued) => {
-                        const name: string = camelCase(argument.getName()),
-                              value: any   = argument.getValue();
-                        if (argument.isSpread()) {
+                    .forEach((parsedArgument: IArgumentValued) => {
+                        const name: string = camelCase(parsedArgument.getName()),
+                              value: any   = parsedArgument.getValue();
+                        if (parsedArgument.isSpread()) {
                             if (!Array.isArray(args[name])) {
                                 args[name] = [];
                             }
@@ -597,30 +584,29 @@ export class ProgramWrapper implements IProgramWrapper {
                 } else {
                     const args: any = {},
                           opts: any = {};
-                    // todo: use reduce
+                    // preparation of command options
                     parsedProgram
                         .getOptions()
-                        .forEach((option: IOptionValued) => {
-                            if (["help", "version", "color"].indexOf(option.getLong()) === -1) {
-                                opts[option.getAttribute()] = option.getValue();
+                        .forEach((parsedOption: IOptionValued) => {
+                            if (parsedOption.getLong() !== "color") {
+                                opts[parsedOption.getAttribute()] = parsedOption.getValue();
                             }
                         });
                     if (parsedProgram.getCommand()) {
                         parsedProgram
                             .getCommand()
                             .getOptions()
-                            .forEach((option: IOptionValued) => {
-                                if (["help"].indexOf(option.getLong()) === -1) {
-                                    opts[option.getAttribute()] = option.getValue();
-                                }
+                            .forEach((parsedOption: IOptionValued) => {
+                                opts[parsedOption.getAttribute()] = parsedOption.getValue();
                             });
                     }
+                    // preparation of command arguments
                     parsedProgram
                         .getArguments()
-                        .forEach((argument: IArgumentValued) => {
-                            const name: string = camelCase(argument.getName()),
-                                  value: any   = argument.getValue();
-                            if (argument.isSpread()) {
+                        .forEach((parsedArgument: IArgumentValued) => {
+                            const name: string = camelCase(parsedArgument.getName()),
+                                  value: any   = parsedArgument.getValue();
+                            if (parsedArgument.isSpread()) {
                                 if (!Array.isArray(args[name])) {
                                     args[name] = [];
                                 }
@@ -635,10 +621,10 @@ export class ProgramWrapper implements IProgramWrapper {
                         parsedProgram
                             .getCommand()
                             .getArguments()
-                            .forEach((argument: IArgumentValued) => {
-                                const name: string = camelCase(argument.getName()),
-                                      value: any   = argument.getValue();
-                                if (argument.isSpread()) {
+                            .forEach((parsedArgument: IArgumentValued) => {
+                                const name: string = camelCase(parsedArgument.getName()),
+                                      value: any   = parsedArgument.getValue();
+                                if (parsedArgument.isSpread()) {
                                     if (!Array.isArray(args[name])) {
                                         args[name] = [];
                                     }

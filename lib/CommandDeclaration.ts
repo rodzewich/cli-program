@@ -22,7 +22,7 @@ export class CommandDeclaration implements ICommandDeclaration {
 
     private options: IListDeclarationOptions = new ListDeclarationOptions();
 
-    private action: (args: {[key: string]: any}, opts: {[key: string]: any}) => void;
+    private action: (args: {[key: string]: any}, opts: {[key: string]: any}) => void = null;
 
     constructor(command: string) {
         let matches: string[] = String(command || "")
@@ -66,7 +66,7 @@ export class CommandDeclaration implements ICommandDeclaration {
         if (!alias) {
             return JSON.stringify(name);
         }
-        return JSON.stringify(name) + "(alias: " + JSON.stringify(name) + ")";
+        return JSON.stringify(name) + "(alias: " + JSON.stringify(alias) + ")";
     }
 
     public getUsage(): string {
