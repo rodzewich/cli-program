@@ -6,15 +6,15 @@ import kebabCase = require("lodash.kebabcase");
 
 export class OptionValued implements IOptionValued {
 
-    private _declaration: IOptionDeclaration = null;
+    private declaration: IOptionDeclaration = null;
 
-    private _original: string = null;
+    private original: string = null;
 
-    private _value: any = null;
+    private value: any = null;
 
     constructor(options:{declaration: IOptionDeclaration, original: string}) {
-        this._declaration = options.declaration || null;
-        this._original = options.original || null;
+        this.declaration = options.declaration || null;
+        this.original = options.original || null;
     }
 
     public getFlags(): string {
@@ -131,7 +131,7 @@ export class OptionValued implements IOptionValued {
     }
 
     public getOriginal(): string {
-        return this._original;
+        return this.original;
     }
 
     public isNegative(): boolean {
@@ -147,17 +147,17 @@ export class OptionValued implements IOptionValued {
     }
 
     public getDeclaration(): IOptionDeclaration {
-        return this._declaration;
+        return this.declaration;
     }
 
     public getValue(): any {
-        return this._value;
+        return this.value;
     }
 
     public setValue(value: any): void {
-        this._value = null;
+        this.value = null;
         if (typeof value !== "undefined") {
-            this._value = value;
+            this.value = value;
         }
     }
 

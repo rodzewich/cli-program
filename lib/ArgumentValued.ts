@@ -4,13 +4,13 @@ import {IArgumentDeclaration} from "./IArgumentDeclaration.ts";
 
 export class ArgumentValued implements IArgumentValued {
 
-    private _declaration: IArgumentDeclaration = null;
+    private declaration: IArgumentDeclaration = null;
 
-    private _value: any = null;
+    private value: any = null;
 
     constructor(options: {declaration: IArgumentDeclaration, value: any}) {
-        this._declaration = options.declaration;
-        this._value = options.value;
+        this.declaration = options.declaration;
+        this.value = options.value;
     }
 
     public getName(): string {
@@ -30,11 +30,11 @@ export class ArgumentValued implements IArgumentValued {
     }
 
     public getDeclaration(): IArgumentDeclaration {
-        return this._declaration;
+        return this.declaration;
     }
 
     public getValue(): void {
-        return this._value;
+        return this.value;
     }
 
     public equal(argument: string|IArgument): boolean {

@@ -5,19 +5,19 @@ import {getFullOptionName} from "./utils.ts";
 
 export class ListOptions<O extends IOption> implements IListOptions<O> {
     
-    private _options: O[] = [];
+    private options: O[] = [];
 
     public addOption(option: O): void {
-        for (const opt of this._options) {
+        for (const opt of this.options) {
             if (opt.equal(option)) {
                 throw new Error("You cannot declare not unique " + getFullOptionName(option) + " option.");
             }           
         }
-        this._options.push(option);
+        this.options.push(option);
     }
     
     public findByShort(short: string): O {
-        for (const option of this._options) {
+        for (const option of this.options) {
             if (short === option.getShort()) {
                 return option;
             }
@@ -26,7 +26,7 @@ export class ListOptions<O extends IOption> implements IListOptions<O> {
     }
     
     public findByLong(long: string): O {
-        for (const option of this._options) {
+        for (const option of this.options) {
             const value: string = option.getLong(),
                   negatives: string[] = option.getNegativePrefixes()
                       .map((negative: string) => negative + "-" + kebabCase(value));
@@ -41,18 +41,18 @@ export class ListOptions<O extends IOption> implements IListOptions<O> {
     }
     
     public forEach(callback: (value?: O, index?: number) => void): void {
-        const length: number = this._options.length;
+        const length: number = this.options.length;
         for (let index = 0; index < length; index++) {
-            callback(this._options[index], index);
+            callback(this.options[index], index);
         }
     }
 
     public getCount(): number {
-        return this._options.length;
+        return this.options.length;
     }
 
     public isEmpty(): boolean {
-        return this._options.length === 0;
+        return this.options.length === 0;
     }
 
 }

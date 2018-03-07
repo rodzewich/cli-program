@@ -14,21 +14,21 @@ import {IArgument} from './IArgument.ts';
 
 export class ProgramDeclaration implements IProgramDeclaration {
 
-    private _name: string = null;
+    private name: string = null;
 
-    private _description: string = null;
+    private description: string = null;
 
-    private _version: string = null;
+    private version: string = null;
 
-    private _versionOption: IOptionDeclaration = null;
+    private versionOption: IOptionDeclaration = null;
 
-    private _usage: string = null;
+    private usage: string = null;
 
-    private _options: IListDeclarationOptions = new ListDeclarationOptions();
+    private options: IListDeclarationOptions = new ListDeclarationOptions();
 
     private commands: IListCommands = new ListCommands();
 
-    private _arguments: IListDeclarationArguments = new ListDeclarationArguments();
+    private arguments: IListDeclarationArguments = new ListDeclarationArguments();
 
     constructor() {
         this.getOptions()
@@ -45,47 +45,47 @@ export class ProgramDeclaration implements IProgramDeclaration {
     }
 
     setName(name: string): void {
-        this._name = String(name || "") || null;
+        this.name = String(name || "") || null;
     }
 
     getName(): string {
-        return this._name;
+        return this.name;
     }
 
     setDescription(description: string): void {
-        this._description = String(description || "") || null;
+        this.description = String(description || "") || null;
     }
 
     getDescription(): string {
-        return this._description;
+        return this.description;
     }
 
     setVersion(version: string, flags?: string, description?: string): void {
-        this._version = version;
-        this._versionOption = new OptionDeclaration({
+        this.version = version;
+        this.versionOption = new OptionDeclaration({
             flags : flags || "-V, --version",
             description : description || "Show version."
         });
         this.getOptions()
-            .addOption(this._versionOption);
+            .addOption(this.versionOption);
     }
 
     getVersion(): string {
-        return this._version
+        return this.version
     }
     
     getVersionOption(): IOptionDeclaration {
-        return this._versionOption || null;
+        return this.versionOption || null;
     }
 
     setUsage(usage: string): void {
-        this._usage = String(usage || "") || null;
+        this.usage = String(usage || "") || null;
     }
 
     getUsage(): string {
         const usage: string[] = [];
-        if (this._usage) {
-            return this._usage;
+        if (this.usage) {
+            return this.usage;
         }
         if (!this.getOptions().isEmpty()) {
             usage.push("[options...]");
@@ -113,11 +113,11 @@ export class ProgramDeclaration implements IProgramDeclaration {
     }
 
     getOptions(): IListDeclarationOptions {
-        return this._options;
+        return this.options;
     }
 
     getArguments(): IListDeclarationArguments {
-        return this._arguments;
+        return this.arguments;
     }
 
     getCommands(): IListCommands {

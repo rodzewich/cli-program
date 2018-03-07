@@ -3,11 +3,11 @@ import {IArgumentDeclaration} from  "./IArgumentDeclaration.ts";
 
 export class ArgumentDeclaration implements IArgumentDeclaration {
 
-    private _name: string = null;
+    private name: string = null;
 
-    private _required: boolean = false;
+    private required: boolean = false;
 
-    private _spread: boolean = false;
+    private spread: boolean = false;
 
     constructor(argument: string) {
         let prepared: string = String(argument || "");
@@ -26,35 +26,35 @@ export class ArgumentDeclaration implements IArgumentDeclaration {
     }
 
     public setName(name: string): void {
-        this._name = String(name || "") || null;
+        this.name = String(name || "") || null;
     }
 
     public getName(): string {
-        return this._name;
+        return this.name;
     }
 
     public setRequired(required: boolean): void {
-        this._required = !!required;
+        this.required = !!required;
     }
 
     public isRequired(): boolean {
-        return this._required;
+        return this.required;
     }
 
     public setOptional(optional: boolean): void {
-        this._required = !optional;
+        this.required = !optional;
     }
 
     public isOptional(): boolean {
-        return !this._required;
+        return !this.required;
     }
 
     public setSpread(spread: boolean): void {
-        this._spread = !!spread;
+        this.spread = !!spread;
     }
 
     public isSpread(): boolean {
-        return this._spread;
+        return this.spread;
     }
 
     public equal(argument: string|IArgument): boolean {

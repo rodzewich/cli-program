@@ -1,26 +1,25 @@
-import {IOption} from "./IOption.ts";
 import {IOptionDeclaration} from "./IOptionDeclaration.ts";
 import kebabCase = require("lodash.kebabcase");
 
 export class OptionDeclaration implements IOptionDeclaration {
 
-    private _flags: string = null;
+    private flags: string = null;
 
-    private _short: string = null;
+    private short: string = null;
 
-    private _long: string = null;
+    private long: string = null;
 
-    private _description: string = null;
+    private description: string = null;
 
-    private _required: boolean = false;
+    private required: boolean = false;
 
-    private _type: string = null;
+    private type: string = null;
 
-    private _defaultValue: string = null;
+    private defaultValue: string = null;
 
-    private _negativePrefixes: string[] = [];
+    private negativePrefixes: string[] = [];
 
-    private _preparationFunction: (value: string) => any = null;
+    private preparationFunction: (value: string) => any = null;
 
     constructor(options:{flags: string, description?: string, defaultValue?: any, negativePrefixes?: string[], preparationFunction?: (value: any) => any}) {
         // todo: Error when define negative prefixes without long
@@ -96,19 +95,19 @@ export class OptionDeclaration implements IOptionDeclaration {
     }
 
     public setFlags(flags: string): void {
-        this._flags = String(flags || "") || null;
+        this.flags = String(flags || "") || null;
     }
 
     public getFlags(): string {
-        return this._flags;
+        return this.flags;
     }
 
     public setShort(short: string): void {
-        this._short = String(short || "") || null;
+        this.short = String(short || "") || null;
     }
 
     public getShort(): string {
-        return this._short;
+        return this.short;
     }
     
     public getName(): string {
@@ -125,35 +124,35 @@ export class OptionDeclaration implements IOptionDeclaration {
     }
 
     public setLong(long: string): void {
-        this._long = String(long || "") || null;
+        this.long = String(long || "") || null;
     }
 
     public getLong(): string {
-        return this._long;
+        return this.long;
     }
 
     public setDescription(description: string): void {
-        this._description = String(description || "") || null;
+        this.description = String(description || "") || null;
     }
 
     public getDescription(): string {
-        return this._description;
+        return this.description;
     }
 
     public setRequired(required: boolean): void {
-        this._required = !!required;
+        this.required = !!required;
     }
 
     public isRequired(): boolean {
-        return this._required;
+        return this.required;
     }
 
     public setOptional(optional: boolean): void {
-        this._required = !optional;
+        this.required = !optional;
     }
 
     public isOptional(): boolean {
-        return !this._required;
+        return !this.required;
     }
 
     public isBool(): boolean {
@@ -161,23 +160,23 @@ export class OptionDeclaration implements IOptionDeclaration {
     }
 
     public setType(type: string): void {
-        this._type = String(type || "") || "boolean";
+        this.type = String(type || "") || "boolean";
     }
 
     public getType(): string {
-        return this._type;
+        return this.type;
     }
 
     public setDefaultValue(defaultValue: string): void {
-        this._defaultValue = defaultValue || null;
+        this.defaultValue = defaultValue || null;
     }
 
     public getDefaultValue(): string {
-        return this._defaultValue;
+        return this.defaultValue;
     }
 
     public setNegativePrefixes(negativePrefixes: string[]) {
-        this._negativePrefixes = Array.isArray(negativePrefixes) ?
+        this.negativePrefixes = Array.isArray(negativePrefixes) ?
             negativePrefixes.reduce((accumulator: string[], value: any) => {
                 const prepared: string = kebabCase(String(value));
                 if (prepared && accumulator.indexOf(prepared) === -1) {
@@ -188,11 +187,11 @@ export class OptionDeclaration implements IOptionDeclaration {
     }
 
     public getNegativePrefixes(): string[] {
-        return this._negativePrefixes || [];
+        return this.negativePrefixes || [];
     }
 
     public setPreparationFunction(preparationFunction: (value: string) => any): void {
-        this._preparationFunction = preparationFunction || null;
+        this.preparationFunction = preparationFunction || null;
     }
 
     public getPreparationFunction(): (value: string) => any {
@@ -217,7 +216,7 @@ export class OptionDeclaration implements IOptionDeclaration {
                     return value;
             }
         }
-        return this._preparationFunction || defaultPreparationFunction;
+        return this.preparationFunction || defaultPreparationFunction;
     }
 
     public equal(option: IOptionDeclaration): boolean {
