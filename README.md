@@ -21,12 +21,12 @@ $ npm install cli-program --save
 - [.arguments(arguments)](#argumentsarguments)
   - [Arguments declaration format](#arguments-declaration-format)
 - [.command(command)](#commandcommand)
-  - [Command declaration format](#)
-  - [Command-specific .action(action)](#)
-  - [Command-specific .description(description)](#)
-  - [Command-specific .alias(alias)](#)
-  - [Command-specific .option(flags)](#)
-  - [Command-specific .usage(usage)](#)
+  - [Command declaration format](#command-declaration-format)
+  - [Command-specific .action(action)](#command-specific-actionaction)
+  - [Command-specific .description(description)](#command-specific-descriptiondescription)
+  - [Command-specific .alias(alias)](#command-specific-aliasalias)
+  - [Command-specific .option(flags)](#command-specific-optionsflags)
+  - [Command-specific .usage(usage)](#command-specific-usageusage)
 - [.parse(action?)](#parseparse)
 - [Automated --help](#automated---help)
 - [Automated --version](#automated---version)
@@ -184,7 +184,7 @@ require("cli-program").arguments("<required>");
 require("cli-program").arguments("<argument1> <argument2> [more...]");
 ```
 
-## Arguments declaration format
+### Arguments declaration format
 
 The arguments can be named anything. Angled brackets (e.g. `<required>`) indicate required input. Square brackets (e.g. `[optional]`) indicate optional input.
 
@@ -210,7 +210,24 @@ require("cli-program")
 // args: {"arg1":"value1","arg2":"value2"}
 ```
 
-## Command-specific .options(flags)
+## .command(command)
+
+### Command declaration format
+
+### Command-specific .action(action)
+
+You can attach handler to a command.
+
+```js
+require("cli-program")
+    .command("rm <dir>") // comand with required argument
+    .action(function (args, opts) {
+        console.log("remove " + args.dir + (opts.recursive ? " recursively" : ""))
+    })
+    .parse()
+```
+
+### Command-specific .options(flags)
 
 You can attach options to a command.
 
@@ -218,6 +235,48 @@ You can attach options to a command.
 require("cli-program")
     .command("rm <dir>") // comand with required argument
     .option("-r, --recursive", "Remove recursively")
+    .action(function (args, opts) {
+        console.log("remove " + args.dir + (opts.recursive ? " recursively" : ""))
+    })
+    .parse()
+```
+
+### Command-specific .description(description)
+
+You can attach description to a command.
+
+```js
+require("cli-program")
+    .command("rm <dir>") // comand with required argument
+    .description("Remove directory")
+    .action(function (args, opts) {
+        console.log("remove " + args.dir + (opts.recursive ? " recursively" : ""))
+    })
+    .parse()
+```
+
+### Command-specific .alias(alias)
+
+You can attach alias to a command.
+
+```js
+require("cli-program")
+    .command("remove <dir>") // comand with required argument
+    .alias("rm")
+    .action(function (args, opts) {
+        console.log("remove " + args.dir + (opts.recursive ? " recursively" : ""))
+    })
+    .parse()
+```
+
+### Command-specific .usage(usage)
+
+You can attach usage to a command.
+
+```js
+require("cli-program")
+    .command("remove <dir>") // comand with required argument
+    .usage("...special usage format...")
     .action(function (args, opts) {
         console.log("remove " + args.dir + (opts.recursive ? " recursively" : ""))
     })
