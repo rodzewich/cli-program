@@ -1,17 +1,18 @@
 import {IProgram} from "./IProgram.ts";
-import {IOptionDeclaration} from "./IOptionDeclaration.ts";
-import {IArgumentDeclaration} from "./IArgumentDeclaration.ts";
 import {ICommandDeclaration} from "./ICommandDeclaration.ts";
+import {IListDeclarationOptions} from "./IListDeclarationOptions.ts";
+import {IListDeclarationArguments} from "./IListDeclarationArguments.ts";
+import {IListCommands} from "./IListCommands.ts";
 
-export interface IProgramDeclaration extends IProgram<IOptionDeclaration, IArgumentDeclaration, ICommandDeclaration> {
+export interface IProgramDeclaration
+       extends IProgram<
+           IListDeclarationOptions,
+           IListDeclarationArguments,
+           ICommandDeclaration
+           > {
     setName(name: string): void;
     setDescription(description: string): void;
     setVersion(version: string, flags?: string, description?: string): void;
     setUsage(usage: string): void;
-    setOptions(options: IOptionDeclaration[]): void;
-    addOption(option: IOptionDeclaration): void;
-    setCommands(commands: ICommandDeclaration[]): void;
-    addCommand(command: ICommandDeclaration): void;
-    setArguments(args: IArgumentDeclaration[]): void;
-    addArgument(arg: IArgumentDeclaration): void;
+    getCommands(): IListCommands;
 }

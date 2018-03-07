@@ -1,3 +1,4 @@
+import {IArgument} from "./IArgument.ts";
 import {IArgumentValued} from "./IArgumentValued.ts";
 import {IArgumentDeclaration} from "./IArgumentDeclaration.ts";
 
@@ -34,6 +35,13 @@ export class ArgumentValued implements IArgumentValued {
 
     public getValue(): void {
         return this._value;
+    }
+
+    public equal(argument: string|IArgument): boolean {
+        if (typeof argument === "string") {
+            return this.getName() === <string>argument;
+        }
+        return this.getName() === (<IArgument>argument).getName();
     }
 
 }

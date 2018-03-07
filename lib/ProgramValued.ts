@@ -1,61 +1,84 @@
 import {IProgramValued} from "./IProgramValued.ts";
 import {IProgramDeclaration} from "./IProgramDeclaration.ts";
-import {IOptionValued} from "./IOptionValued.ts";
 import {ICommandValued} from "./ICommandValued.ts";
-import {IArgumentValued} from "./IArgumentValued.ts";
 import {IOptionDeclaration} from "./IOptionDeclaration.ts";
+import {IListValuedOptions} from "./IListValuedOptions.ts";
+import {ListValuedOptions} from "./ListValuedOptions.ts";
+import {IListValuedArguments} from './IListValuedArguments.ts';
+import {ListValuedArguments} from './ListValuedArguments.ts';
 
 export class ProgramValued implements IProgramValued {
 
-    private _declaration: IProgramDeclaration = null;
+    private declaration: IProgramDeclaration = null;
 
-    private _options: IOptionValued[] = [];
+    private options: IListValuedOptions = new ListValuedOptions();
 
-    private _commands: ICommandValued[] = [];
+    private command: ICommandValued = null;
 
-    private _arguments: IArgumentValued[] = [];
+    private arguments: IListValuedArguments = new ListValuedArguments();
 
-    constructor(declaration: IProgramDeclaration, commands: ICommandValued[], opts: IOptionValued[], args: IArgumentValued[]) {
-        this._declaration = declaration;
-        this._commands    = commands;
-        this._options     = opts;
-        this._arguments   = args;
+    constructor(declaration: IProgramDeclaration) {
+        this.declaration = declaration;
     }
 
-    getName(): string {
-        return this.getDeclaration().getName();
+    public getName(): string {
+        const declaration: IProgramDeclaration = this.getDeclaration();
+        if (!declaration) {
+            throw new Error("Program declaration was removed.");
+        }
+        return declaration.getName();
     }
 
-    getDescription(): string {
-        return this.getDeclaration().getDescription();
+    public getDescription(): string {
+        const declaration: IProgramDeclaration = this.getDeclaration();
+        if (!declaration) {
+            throw new Error("Program declaration was removed.");
+        }
+        return declaration.getDescription();
     }
 
-    getVersion(): string {
-        return this.getDeclaration().getVersion();
+    public getVersion(): string {
+        const declaration: IProgramDeclaration = this.getDeclaration();
+        if (!declaration) {
+            throw new Error("Program declaration was removed.");
+        }
+        return declaration.getVersion();
     }
 
-    getVersionOption(): IOptionDeclaration {
-        return this.getDeclaration().getVersionOption();
+    public getVersionOption(): IOptionDeclaration {
+        const declaration: IProgramDeclaration = this.getDeclaration();
+        if (!declaration) {
+            throw new Error("Program declaration was removed.");
+        }
+        return declaration.getVersionOption();
     }
 
-    getUsage(): string {
-        return this.getDeclaration().getUsage();
+    public getUsage(): string {
+        const declaration: IProgramDeclaration = this.getDeclaration();
+        if (!declaration) {
+            throw new Error("Program declaration was removed.");
+        }
+        return declaration.getUsage();
     }
 
-    getOptions(): IOptionValued[] {
-        return this._options;
+    public getOptions(): IListValuedOptions {
+        return this.options;
     }
 
-    getCommands(): ICommandValued[] {
-        return this._commands;
+    public getCommand(): ICommandValued {
+        return this.command;
     }
 
-    getArguments(): IArgumentValued[] {
-        return this._arguments;
+    public setCommand(command: ICommandValued): void {
+        this.command = command || null;
     }
 
-    getDeclaration(): IProgramDeclaration {
-        return this._declaration;
+    public getArguments(): IListValuedArguments {
+        return this.arguments;
+    }
+
+    public getDeclaration(): IProgramDeclaration {
+        return this.declaration;
     }
 
 }

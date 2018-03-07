@@ -1,3 +1,4 @@
+import {IArgument} from  "./IArgument.ts";
 import {IArgumentDeclaration} from  "./IArgumentDeclaration.ts";
 
 export class ArgumentDeclaration implements IArgumentDeclaration {
@@ -54,6 +55,13 @@ export class ArgumentDeclaration implements IArgumentDeclaration {
 
     public isSpread(): boolean {
         return this._spread;
+    }
+
+    public equal(argument: string|IArgument): boolean {
+        if (typeof argument === "string") {
+            return this.getName() === <string>argument;
+        }
+        return this.getName() === (<IArgument>argument).getName();
     }
 
 }

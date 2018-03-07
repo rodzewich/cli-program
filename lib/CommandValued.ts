@@ -1,48 +1,72 @@
 import {ICommandValued} from "./ICommandValued.ts";
-import {IOptionValued} from "./IOptionValued.ts";
-import {IArgumentValued} from "./IArgumentValued.ts";
 import {ICommandDeclaration} from "./ICommandDeclaration.ts";
+import {IListValuedOptions} from "./IListValuedOptions.ts";
+import {ListValuedOptions} from "./ListValuedOptions.ts";
+import {IListValuedArguments} from "./IListValuedArguments.ts";
+import {ListValuedArguments} from "./ListValuedArguments.ts";
 
 export class CommandValued implements ICommandValued {
 
-    private _options: IOptionValued[] = null;
+    private options: IListValuedOptions = new ListValuedOptions();
 
-    private _arguments: IArgumentValued[] = null;
+    private arguments: IListValuedArguments = new ListValuedArguments();
 
-    private _declaration: ICommandDeclaration = null;
+    private declaration: ICommandDeclaration = null;
 
-    constructor(options:{declaration: ICommandDeclaration, opts?: IOptionValued[], args?: IArgumentValued[]}) {
-        this._declaration = options.declaration;
-        this._options = options.opts || [];
-        this._arguments = options.args || [];
+    constructor(declaration: ICommandDeclaration) {
+        this.declaration = declaration;
     }
 
-    getName(): string {
-        return this.getDeclaration().getName();
+    public getName(): string {
+        const declaration: ICommandDeclaration = this.getDeclaration();
+        if (!declaration) {
+            throw new Error("Command declaration was removed.");
+        }
+        return declaration.getName();
     }
 
-    getAlias(): string {
-        return this.getDeclaration().getAlias();
+    public getAlias(): string {
+        const declaration: ICommandDeclaration = this.getDeclaration();
+        if (!declaration) {
+            throw new Error("Command declaration was removed.");
+        }
+        return declaration.getAlias();
     }
 
-    getUsage(): string {
-        return this.getDeclaration().getUsage();
+    public getFull(): string {
+        const declaration: ICommandDeclaration = this.getDeclaration();
+        if (!declaration) {
+            throw new Error("Command declaration was removed.");
+        }
+        return declaration.getFull();
     }
 
-    getDescription(): string {
-        return this.getDeclaration().getDescription();
+    public getUsage(): string {
+        const declaration: ICommandDeclaration = this.getDeclaration();
+        if (!declaration) {
+            throw new Error("Command declaration was removed.");
+        }
+        return declaration.getUsage();
     }
 
-    getOptions(): IOptionValued[] {
-        return this._options;
+    public getDescription(): string {
+        const declaration: ICommandDeclaration = this.getDeclaration();
+        if (!declaration) {
+            throw new Error("Command declaration was removed.");
+        }
+        return declaration.getDescription();
     }
 
-    getArguments(): IArgumentValued[] {
-        return this._arguments;
+    public getOptions(): IListValuedOptions {
+        return this.options;
     }
 
-    getDeclaration(): ICommandDeclaration {
-        return this._declaration;
+    public getArguments(): IListValuedArguments {
+        return this.arguments;
+    }
+
+    public getDeclaration(): ICommandDeclaration {
+        return this.declaration;
     }
 
 }

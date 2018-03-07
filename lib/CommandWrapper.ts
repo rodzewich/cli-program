@@ -25,7 +25,7 @@ export class CommandWrapper implements ICommandWrapper {
         try {
             const declaration: ICommandDeclaration = getCommandDeclaration(this);
             if (!declaration) {
-                throw new Error("Command declaration was removed!");
+                throw new Error("Command declaration was removed.");
             }
             declaration.setAlias(alias);
             return this;
@@ -44,7 +44,7 @@ export class CommandWrapper implements ICommandWrapper {
         try {
             const declaration: ICommandDeclaration = getCommandDeclaration(this);
             if (!declaration) {
-                throw new Error("Command declaration was removed!");
+                throw new Error("Command declaration was removed.");
             }
             declaration.setUsage(usage);
             return this;
@@ -67,9 +67,9 @@ export class CommandWrapper implements ICommandWrapper {
         try {
             const declaration: ICommandDeclaration = getCommandDeclaration(this);
             if (!declaration) {
-                throw new Error("Command declaration was removed!");
+                throw new Error("Command declaration was removed.");
             }
-            declaration.addOption(new OptionDeclaration({flags, description, defaultValue, negativePrefixes, preparationFunction}));
+            declaration.getOptions().addOption(new OptionDeclaration({flags, description, defaultValue, negativePrefixes, preparationFunction}));
             return this;
         } catch (error) {
             showError(error, null, getStdoutHandlerForCommand(this), getStderrHandlerForCommand(this));
@@ -86,7 +86,7 @@ export class CommandWrapper implements ICommandWrapper {
         try {
             const declaration: ICommandDeclaration = getCommandDeclaration(this);
             if (!declaration) {
-                throw new Error("Command declaration was removed!");
+                throw new Error("Command declaration was removed.");
             }
             declaration.setDescription(description);
             return this;
@@ -105,7 +105,7 @@ export class CommandWrapper implements ICommandWrapper {
         try {
             const declaration: ICommandDeclaration = getCommandDeclaration(this);
             if (!declaration) {
-                throw new Error("Command declaration was removed!");
+                throw new Error("Command declaration was removed.");
             }
             declaration.setAction(action);
             return this;

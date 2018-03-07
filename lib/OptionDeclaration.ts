@@ -110,6 +110,19 @@ export class OptionDeclaration implements IOptionDeclaration {
     public getShort(): string {
         return this._short;
     }
+    
+    public getName(): string {
+        const long: string = this.getLong(),
+              short: string = this.getShort();
+        if (!long) {
+            return JSON.stringify("-" + short);
+        }
+        if (!short) {
+            return JSON.stringify("--" + long);
+        }
+        return JSON.stringify("--" + long) + 
+            "(" + JSON.stringify("-" + short) + ")";
+    }
 
     public setLong(long: string): void {
         this._long = String(long || "") || null;
@@ -207,57 +220,35 @@ export class OptionDeclaration implements IOptionDeclaration {
         return this._preparationFunction || defaultPreparationFunction;
     }
 
-    public equal(option: string|IOption): boolean {
-        if (option) {
-            if (typeof option === "string") {
+    public equal(option: IOptionDeclaration): boolean {
+        return (
+            this.getShort() !== null &&
+            option.getShort() !== null &&
+            this.getShort() === option.getShort() ||
+            getAvailableNames(this)
+                .some((long: string) => {
+                    return getAvailableNames(option)
+                            .indexOf(long) !== -1;
+                }) ||
+            getAvailableNames(option)
+                .some((long: string) => {
+                    return getAvailableNames(this)
+                            .indexOf(long) !== -1;
+                })
+        );
+
+        function getAvailableNames(option: IOptionDeclaration): string[] {
+            if (option.getNegativePrefixes().length !== 0) {
                 return [
-                        kebabCase(this.getShort()),
-                        kebabCase(this.getLong()),
-                        ...this.getNegativePrefixes()
-                            .map((prefix: string) => prefix + "-" + kebabCase(this.getLong()))
-                            .filter(Boolean)
-                    ].indexOf(kebabCase(option as string)) !== -1;
+                    kebabCase(option.getLong()),
+                    ...option.getNegativePrefixes()
+                        .map((prefix: string) => prefix + "-" + kebabCase(option.getLong()))
+                ].filter(Boolean);
             } else {
-                return (
-                    this.getShort() === option.getShort() ||
-                    [
-                        kebabCase(option.getLong()),
-                        ...option.getNegativePrefixes()
-                            .map((prefix: string) => prefix + "-" + kebabCase(option.getLong()))
-
-                    ]
-                        .filter(Boolean)
-                        .some((long: string) => {
-                            return [
-                                    kebabCase(this.getLong()),
-                                    ...this.getNegativePrefixes()
-                                        .map((prefix: string) => prefix + "-" + kebabCase(this.getLong()))
-
-                                ]
-                                    .filter(Boolean)
-                                    .indexOf(long) !== -1;
-                        }) ||
-                    [
-                        kebabCase(this.getLong()),
-                        ...this.getNegativePrefixes()
-                            .map((prefix: string) => prefix + "-" + kebabCase(this.getLong()))
-
-                    ]
-                        .filter(Boolean)
-                        .some((long: string) => {
-                            return [
-                                    kebabCase(option.getLong()),
-                                    ...option.getNegativePrefixes()
-                                        .map((prefix: string) => prefix + "-" + kebabCase(option.getLong()))
-
-                                ]
-                                    .filter(Boolean)
-                                    .indexOf(long) !== -1;
-                        })
-                );
+                return [kebabCase(option.getLong())].filter(Boolean);
             }
         }
-        return false;
+        
     }
 
 }

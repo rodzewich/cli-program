@@ -13,6 +13,8 @@ import {ICommandWrapper} from "./ICommandWrapper";
 import camelCase = require("lodash.camelcase");
 import snakeCase = require("lodash.snakecase");
 import kebabCase = require("lodash.kebabcase");
+import {IListOptions} from './IListOptions.ts';
+import {IListArguments} from './IListArguments';
 
 const programs: [IProgramWrapper, IProgramDeclaration][]  = [],
       commands: [ICommandWrapper, ICommandDeclaration][]  = [],
@@ -242,69 +244,6 @@ export function formatLine(line: string): string[] {
     return result;
 }
 
-export function getCountOfRequireArguments<A extends IArgument>(args: A[]): number {
-    for (const [i, arg] of args.entries()) {
-        if (arg.isOptional()) {
-            return i;
-        }
-    }
-    return args.length;
-}
-
-export function findArgumentByIndex<A extends IArgument>(index: number, args: A[]): A {
-    for (const [i, arg] of args.entries()) {
-        if (arg.isSpread()) {
-            return arg;
-        }
-        if (i === index) {
-            return arg;
-        }
-    }
-    return null;
-}
-
-export function findCommandByName<C extends ICommand<any, any>>(name: string, commands: C[]): C {
-    for (const command of commands) {
-        if (name === command.getName()) {
-            return command;
-        }
-    }
-    return null;
-}
-
-export function findCommandByAlias<C extends ICommand<any, any>>(alias: string, commands: C[]): C {
-    for (const command of commands) {
-        if (alias === command.getAlias()) {
-            return command;
-        }
-    }
-    return null;
-}
-
-export function findOptionByShort<O extends IOption>(short: string, options: O[]): O {
-    for (const option of options) {
-        if (short === option.getShort()) {
-            return option;
-        }
-    }
-    return null;
-}
-
-export function findOptionByLong<O extends IOption>(long: string, options: O[]): O {
-    for (const option of options) {
-        const value: string = option.getLong(),
-              negatives: string[] = (option.getNegativePrefixes() || [])
-                  .map((negative: string) => kebabCase(negative + "-" + value));
-        if (kebabCase(long) === kebabCase(value)) {
-            return option;
-        }
-        if (negatives.indexOf(kebabCase(long)) !== -1) {
-            return option;
-        }
-    }
-    return null;
-}
-
 export function showHelp(program: IProgramValued, name: string): string {
     const fileExtension: string = path.extname(name),
           fileName: string  = path.basename(name, fileExtension);
@@ -329,12 +268,12 @@ export function showHelp(program: IProgramValued, name: string): string {
     }
 
     function showUsage(): string[] {
-        const command: ICommandValued = program.getCommands()[0] || null;
+        const command: ICommandValued = program.getCommand();
         const usage: string[] = [
             fileName
         ];
         if (command) {
-            if (program.getDeclaration().getOptions().length !== 0) {
+            if (!program.getDeclaration().getOptions().isEmpty()) {
                 usage.push("[options...]");
             }
             usage.push(command.getName());
@@ -351,24 +290,23 @@ export function showHelp(program: IProgramValued, name: string): string {
     }
 
     function showGeneralOptions(): string[] {
-        const command: ICommandValued = program.getCommands()[0] || null,
-              options: IOptionDeclaration[] = program.getDeclaration().getOptions(),
+        const command: ICommandValued = program.getCommand(),
               content: string[] = [];
-        if (options.length !== 0) {
-            if (command && command.getOptions().length !== 0) {
+        if (!program.getDeclaration().getOptions().isEmpty()) {
+            if (command && !command.getOptions().isEmpty()) {
                 content.push(colors.bold("General Options:"));
             } else {
                 content.push(colors.bold("Options:"));
             }
             content.push("");
         }
-        content.push(...showOptions(options));
+        content.push(...showOptions(program.getDeclaration().getOptions()));
         content.push("");
         return content;
     }
 
     function showExamplesColors(): string[] {
-        const command: ICommandValued = program.getCommands()[0] || null,
+        const command: ICommandValued = program.getCommand(),
               content: string[] = [];
         if (!command) {
             content.push(colors.bold("Examples for Color:"));
@@ -384,40 +322,38 @@ export function showHelp(program: IProgramValued, name: string): string {
     }
 
     function showCommandOptions(): string[] {
-        const command: ICommandValued = program.getCommands()[0] || null,
-              options: IOptionDeclaration[] = command ? command.getDeclaration().getOptions() : [],
+        const command: ICommandValued = program.getCommand(),
               content: string[] = [];
         if (command) {
-            if (options.length !== 0) {
-                if (program.getDeclaration().getOptions().length !== 0) {
+            if (!command.getOptions().isEmpty()) {
+                if (!program.getDeclaration().getOptions().isEmpty()) {
                     content.push(colors.bold("Command Options:"));
                 } else {
                     content.push(colors.bold("Options:"));
                 }
                 content.push("");
             }
-            content.push(...showOptions(options));
+            content.push(...showOptions(command.getOptions()));
             content.push("");
         }
         return content;
     }
 
-    function showOptions(options: IOptionDeclaration[]): string[] {
+    function showOptions(options: IListOptions<any>): string[] {
         const content: string[] = [];
-        optionWidth = options.reduce((accumulator: number, option: IOptionDeclaration) => {
-            return Math.max(accumulator, showOption(option, true, true, true, null).length);
-        }, optionWidth);
-
-        if (options.length !== 0) {
-            for (const option of options) {
+        options.forEach((option: IOption) => {
+            optionWidth = Math.max(optionWidth, showOption(option, true, true, true, null).length);
+        });
+        if (!options.isEmpty()) {
+            options.forEach((option: IOption) => {
                 const widthDiff: number = optionWidth - showOption(option, true, true, true, null).length;
                 content.push(showOption(option, false, false, false, widthDiff));
-            }
+            });
         }
         return content;
     }
 
-    function showOption(option: IOptionDeclaration, withoutNegative: boolean = false, withoutDescription: boolean = false, withoutColors: boolean = false, widthDiff: number = null): string {
+    function showOption(option: IOption, withoutNegative: boolean = false, withoutDescription: boolean = false, withoutColors: boolean = false, widthDiff: number = null): string {
         const content: string[] = [],
               short: string = option.getShort(),
               long: string  = option.getLong(),
@@ -454,25 +390,27 @@ export function showHelp(program: IProgramValued, name: string): string {
     }
 
     function showCommands(): string[] {
-        const currentCommand: ICommandValued = program.getCommands()[0] || null,
-              declaredCommands: ICommandDeclaration[] = program.getDeclaration().getCommands(),
+        const currentCommand: ICommandValued = program.getCommand(),
               showContent: string[]               = [];
-        if (!currentCommand && declaredCommands.length !== 0) {
+        if (!currentCommand && !program.getDeclaration().getCommands().isEmpty()) {
             showContent.push(colors.bold("Commands:"));
             showContent.push("");
-            for (const command of declaredCommands) {
-                showContent.push("  " + colors.bold(command.getName()) +
-                    (command.getAlias() ? " (alias: " + command.getAlias() + ")" : "")
-                    + " " + showArguments(command.getArguments()) + "\n    " + command.getDescription());
-                showContent.push("");
-            }
+            program
+                .getDeclaration()
+                .getCommands()
+                .forEach((command: ICommandDeclaration) => {
+                    showContent.push("  " + colors.bold(command.getName()) +
+                        (command.getAlias() ? " (alias: " + command.getAlias() + ")" : "")
+                        + " " + showArguments(command.getArguments()) + "\n    " + command.getDescription());
+                    showContent.push("");
+                });
         }
         return showContent;
     }
 
-    function showArguments(args: IArgument[]): string {
+    function showArguments(args: IListArguments<any>): string {
         const showContent: string[] = [];
-        for (const argument of args) {
+        args.forEach((argument: IArgument) => {
             const name: string = argument.getName(),
                   spread: boolean = argument.isSpread(),
                   required: boolean = argument.isRequired();
@@ -483,12 +421,12 @@ export function showHelp(program: IProgramValued, name: string): string {
             } else {
                 showContent.push("[" + name + "...]");
             }
-        }
+        });
         return showContent.join(" ");
     }
 
     function showCommandDescription(): string[] {
-        const command: ICommandValued = program.getCommands()[0] || null;
+        const command: ICommandValued = program.getCommand();
         if (command && command.getDeclaration()) {
             return [
                 colors.bold("Description:"),

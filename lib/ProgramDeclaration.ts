@@ -3,9 +3,14 @@ import {IOptionDeclaration} from "./IOptionDeclaration.ts";
 import {OptionDeclaration} from "./OptionDeclaration.ts";
 import {ICommandDeclaration} from "./ICommandDeclaration.ts";
 import {CommandDeclaration} from "./CommandDeclaration.ts";
-import {IArgumentDeclaration} from "./IArgumentDeclaration.ts";
-import {getFullOptionName} from "./utils.ts";
+import {ListDeclarationOptions} from "./ListDeclarationOptions.ts";
+import {IListDeclarationOptions} from "./IListDeclarationOptions.ts";
+import {IListDeclarationArguments} from "./IListDeclarationArguments.ts";
+import {ListDeclarationArguments} from "./ListDeclarationArguments.ts";
+import {ListCommands} from "./ListCommands.ts";
+import {IListCommands} from "./IListCommands.ts";
 import kebabCase = require("lodash.kebabcase");
+import {IArgument} from './IArgument.ts';
 
 export class ProgramDeclaration implements IProgramDeclaration {
 
@@ -19,22 +24,24 @@ export class ProgramDeclaration implements IProgramDeclaration {
 
     private _usage: string = null;
 
-    private _options: IOptionDeclaration[] = [];
+    private _options: IListDeclarationOptions = new ListDeclarationOptions();
 
-    private _commands: ICommandDeclaration[] = [];
+    private commands: IListCommands = new ListCommands();
 
-    private _arguments: IArgumentDeclaration[] = [];
+    private _arguments: IListDeclarationArguments = new ListDeclarationArguments();
 
     constructor() {
-        this.addOption(new OptionDeclaration({
-            flags : "-h, --help",
-            description : "Show help"
-        }));
-        this.addOption(new OptionDeclaration({
-            flags : "--color [value]",
-            description : "Disable/enable output colors",
-            negativePrefixes : ["no"]
-        }));
+        this.getOptions()
+            .addOption(new OptionDeclaration({
+                flags : "-h, --help",
+                description : "Show help"
+            }));
+        this.getOptions()
+            .addOption(new OptionDeclaration({
+                flags : "--color [value]",
+                description : "Disable/enable output colors",
+                negativePrefixes : ["no"]
+            }));
     }
 
     setName(name: string): void {
@@ -59,7 +66,8 @@ export class ProgramDeclaration implements IProgramDeclaration {
             flags : flags || "-V, --version",
             description : description || "Show version."
         });
-        this.addOption(this._versionOption);
+        this.getOptions()
+            .addOption(this._versionOption);
     }
 
     getVersion(): string {
@@ -79,21 +87,19 @@ export class ProgramDeclaration implements IProgramDeclaration {
         if (this._usage) {
             return this._usage;
         }
-        if (this.getOptions().length !== 0) {
+        if (!this.getOptions().isEmpty()) {
             usage.push("[options...]");
         }
-        if (this.getCommands().length !== 0) {
-            const hasArguments: boolean = this.getCommands().filter((command: CommandDeclaration) => command.getArguments().length !== 0).length !== 0,
-                  hasOptions: boolean   = this.getCommands().filter((command: CommandDeclaration) => command.getOptions().length !== 0).length !== 0;
+        if (!this.getCommands().isEmpty()) {
             usage.push("<command>");
-            if (hasArguments) {
+            if (this.getCommands().hasArguments()) {
                 usage.push("[arguments...]");
             }
-            if (hasOptions) {
+            if (this.getCommands().hasOptions()) {
                 usage.push("[options...]");
             }
-        } else if (this.getArguments().length !== 0) {
-            for (const argument of this.getArguments()) {
+        } else if (!this.getArguments().isEmpty()) {
+            this.getArguments().forEach((argument: IArgument) => {
                 if (argument.isRequired()) {
                     usage.push("<" + argument.getName() + ">");
                 } else if (!argument.isSpread()) {
@@ -101,101 +107,21 @@ export class ProgramDeclaration implements IProgramDeclaration {
                 } else {
                     usage.push("[" + argument.getName() + "...]");
                 }
-            }
+            });
         }
         return usage.join(" ");
     }
 
-    addOption(option: IOptionDeclaration): void {
-        const long: string  = option.getLong(),
-              short: string = option.getShort(),
-              negatives: string[] = option.getNegativePrefixes() || [];
-        for (const item of this._options) {
-            const negative: string[] = item.getNegativePrefixes() || [],
-                  keys: string[] = [item.getShort(), item.getLong(), ...negative.map((prefix: string) => prefix + "-" + item.getLong())].filter(Boolean).map((key: string) => kebabCase(key));
-            if (keys.indexOf(short) !== -1 ||
-                keys.indexOf(kebabCase(long)) !== -1) {
-                throw new Error("You cannot declare not unique " + getFullOptionName(option) + " option.");
-            }
-            for (const negative of negatives) {
-                if (keys.indexOf(kebabCase(negative + "-" + long)) !== -1) {
-                    throw new Error("You cannot declare not unique " + getFullOptionName(option) + " option due to negative prefix.");
-                }
-            }
-        }
-        this._options.push(option);
+    getOptions(): IListDeclarationOptions {
+        return this._options;
     }
 
-    setOptions(options: IOptionDeclaration[]): void {
-        this._options = [];
-        if (Array.isArray(options)) {
-            for (const option of options) {
-                this.addOption(option);
-            }
-        }
+    getArguments(): IListDeclarationArguments {
+        return this._arguments;
     }
 
-    getOptions(): IOptionDeclaration[] {
-        return this._options.slice();
-    }
-
-    addArgument(arg: IArgumentDeclaration): void {
-        const hasOptional: boolean = this._arguments.filter((argument: IArgumentDeclaration) => argument.isOptional()).length !== 0,
-              hasSpread: boolean   = this._arguments.filter((argument: IArgumentDeclaration) => argument.isSpread()).length !== 0;
-        if (this._commands.length !== 0) {
-            throw new Error("You cannot declare arguments with commands");
-        }
-        if (this._arguments.filter((item: IArgumentDeclaration) => item.getName() === arg.getName()).length !== 0) {
-            throw new Error("You cannot declare not unique argument");
-        }
-        if (hasOptional) {
-            throw new Error("You cannot declare arguments after optional");
-        }
-        if (hasSpread) {
-            throw new Error("You cannot declare arguments after spread");
-        }
-        this._arguments.push(arg);
-
-    }
-
-    setArguments(args: IArgumentDeclaration[]): void {
-        this._arguments = [];
-        if (Array.isArray(args)) {
-            for (const arg of args) {
-                this.addArgument(arg);
-            }
-        }
-    }
-
-    getArguments(): IArgumentDeclaration[] {
-        return this._arguments.slice();
-    }
-
-    addCommand(command: ICommandDeclaration): void {
-        if (this._arguments.length !== 0) {
-            throw new Error("You cannot declare commands with arguments");
-        }
-        for (const cmd of this._commands) {
-            const keys: string[] = [cmd.getAlias(), cmd.getName()].filter(Boolean);
-            if (keys.indexOf(command.getAlias()) !== -1 ||
-                keys.indexOf(command.getName()) !== -1) {
-                throw new Error("You cannot declare not unique command");
-            }
-        }
-        this._commands.push(command);
-    }
-
-    setCommands(commands: ICommandDeclaration[]): void {
-        this._commands = [];
-        if (Array.isArray(commands)) {
-            for (const command of commands) {
-                this.addCommand(command);
-            }
-        }
-    }
-
-    getCommands(): ICommandDeclaration[] {
-        return this._commands.slice();
+    getCommands(): IListCommands {
+        return this.commands;
     }
 
 }

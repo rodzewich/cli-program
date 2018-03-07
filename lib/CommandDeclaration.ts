@@ -1,26 +1,28 @@
 import {ICommandDeclaration} from "./ICommandDeclaration.ts";
-import {IArgumentDeclaration} from "./IArgumentDeclaration.ts";
 import {ArgumentDeclaration} from "./ArgumentDeclaration.ts";
-import {IOptionDeclaration} from "./IOptionDeclaration.ts";
 import {OptionDeclaration} from "./OptionDeclaration.ts";
-import {getFullOptionName} from "./utils.ts";
+import {IListDeclarationOptions} from "./IListDeclarationOptions.ts";
+import {ListDeclarationOptions} from "./ListDeclarationOptions.ts";
+import {IListDeclarationArguments} from './IListDeclarationArguments.ts';
+import {ListDeclarationArguments} from './ListDeclarationArguments.ts';
 import kebabCase = require("lodash.kebabcase");
+import {IArgument} from './IArgument.ts';
 
 export class CommandDeclaration implements ICommandDeclaration {
 
-    private _name: string = null;
+    private name: string = null;
 
-    private _alias: string = null;
+    private alias: string = null;
 
-    private _usage: string = null;
+    private usage: string = null;
 
-    private _description: string = null;
+    private description: string = null;
 
-    private _arguments: IArgumentDeclaration[] = [];
+    private arguments: IListDeclarationArguments = new ListDeclarationArguments();
 
-    private _options: IOptionDeclaration[] = [];
+    private options: IListDeclarationOptions = new ListDeclarationOptions();
 
-    private _action: (args: {[key: string]: any}, opts: {[key: string]: any}) => void;
+    private action: (args: {[key: string]: any}, opts: {[key: string]: any}) => void;
 
     constructor(command: string) {
         let matches: string[] = String(command || "")
@@ -29,41 +31,50 @@ export class CommandDeclaration implements ICommandDeclaration {
             throw new Error("Invalid command format");
         }
         this.setName(matches[1]);
-        this.addOption(new OptionDeclaration({
+        this.getOptions().addOption(new OptionDeclaration({
             flags: "-h, --help",
             description: "Show help"
         }));
         matches[2].split(" ")
             .filter((value: string) => value !== "")
-            .forEach((argument: string) => this.addArgument(new ArgumentDeclaration(argument)))
+            .forEach((argument: string) => this.getArguments().addArgument(new ArgumentDeclaration(argument)))
     }
 
     public setName(name: string): void {
-        this._name = String(name || "") || null;
+        this.name = String(name || "") || null;
     }
 
     public getName(): string {
-        return this._name;
+        return this.name;
     }
 
     public setAlias(alias: string): void {
-        this._alias = String(alias || "") || null;
+        this.alias = String(alias || "") || null;
     }
 
     public getAlias(): string {
-        return this._alias;
+        return this.alias;
     }
 
     public setUsage(usage: string): void {
-        this._usage = usage || "";
+        this.usage = usage || "";
+    }
+
+    public getFull(): string {
+        const name: string = this.getName();
+        const alias: string = this.getAlias();
+        if (!alias) {
+            return JSON.stringify(name);
+        }
+        return JSON.stringify(name) + "(alias: " + JSON.stringify(name) + ")";
     }
 
     public getUsage(): string {
         const usage: string[] = [];
-        if (this._usage) {
-            return this._usage;
+        if (this.usage) {
+            return this.usage;
         }
-        for (const argument of this.getArguments()) {
+        this.getArguments().forEach((argument: IArgument) => {
             if (argument.isRequired()) {
                 usage.push("<" + argument.getName() + ">");
             } else if (!argument.isSpread()) {
@@ -71,74 +82,35 @@ export class CommandDeclaration implements ICommandDeclaration {
             } else {
                 usage.push("[" + argument.getName() + "...]");
             }
-        }
-        if (this.getOptions().length !== 0) {
+        })
+        if (!this.getOptions().isEmpty()) {
             usage.push("[options...]");
         }
         return usage.join(" ");
     }
 
     public setDescription(description: string): void {
-        this._description = String(description || "") || null;
+        this.description = String(description || "") || null;
     }
 
     public getDescription(): string {
-        return this._description;
+        return this.description;
     }
 
-    public addOption(option: IOptionDeclaration): void {
-        const long: string  = option.getLong(),
-              short: string = option.getShort(),
-              negatives: string[] = option.getNegativePrefixes() || [];
-        for (const item of this._options) {
-            const negative: string[] = item.getNegativePrefixes() || [],
-                  keys: string[] = [item.getShort(), item.getLong(), ...negative.map((prefix: string) => prefix + "-" + item.getLong())].filter(Boolean).map((key: string) => kebabCase(key));
-            if (keys.indexOf(short) !== -1 ||
-                keys.indexOf(kebabCase(long)) !== -1) {
-                throw new Error("You cannot declare not unique " + getFullOptionName(option) + " option.");
-            }
-            for (const negative of negatives) {
-                if (keys.indexOf(kebabCase(negative + "-" + long)) !== -1) {
-                    throw new Error("You cannot declare not unique " + getFullOptionName(option) + " option due to negative prefix.");
-                }
-            }
-        }
-        this._options.push(option);
+    public getOptions(): IListDeclarationOptions {
+        return this.options;
     }
 
-    public setOptions(options: IOptionDeclaration[]): void {}
-
-    public getOptions(): IOptionDeclaration[] {
-        return this._options.slice();
-    }
-
-    public addArgument(argument: IArgumentDeclaration): void {
-        const hasOptional: boolean = this._arguments.filter((argument: IArgumentDeclaration) => argument.isOptional()).length !== 0,
-              hasSpread: boolean   = this._arguments.filter((argument: IArgumentDeclaration) => argument.isSpread()).length !== 0;
-        if (this._arguments.filter((item: IArgumentDeclaration) => argument.getName() === item.getName()).length !== 0) {
-            throw new Error("You cannot declare not unique argument");
-        }
-        if (hasOptional) {
-            throw new Error("You cannot declare arguments after optional");
-        }
-        if (hasSpread) {
-            throw new Error("You cannot declare arguments after spread");
-        }
-        this._arguments.push(argument);
-    }
-
-    public setArguments(args: IArgumentDeclaration[]): void {}
-
-    public getArguments(): IArgumentDeclaration[] {
-        return this._arguments.slice();
+    public getArguments(): IListDeclarationArguments {
+        return this.arguments;
     }
 
     public setAction(action: (args: {[key: string]: any}, opts: {[key: string]: any}) => void): void {
-        this._action = action || null;
+        this.action = action || null;
     }
 
     public getAction(): (args: {[key: string]: any}, opts: {[key: string]: any}) => void {
-        return this._action;
+        return this.action;
     }
 
 }

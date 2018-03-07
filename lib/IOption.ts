@@ -1,6 +1,7 @@
 export interface IOption {
     getFlags(): string;
     getShort(): string;
+    getName(): string;
     getLong(): string;
     getDescription(): string;
     isRequired(): boolean;
@@ -10,5 +11,5 @@ export interface IOption {
     getDefaultValue(): string;
     getNegativePrefixes(): string[];
     getPreparationFunction(): (value: string) => any;
-    equal(option: string|IOption): boolean;
+    equal(option: IOption): boolean;
 }

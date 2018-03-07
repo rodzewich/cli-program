@@ -20,7 +20,7 @@ export class OptionValued implements IOptionValued {
     public getFlags(): string {
         const declaration: IOptionDeclaration = this.getDeclaration();
         if (!declaration) {
-            throw new Error("Option declaration was removed!");
+            throw new Error("Option declaration was removed.");
         }
         return declaration.getFlags();
     }
@@ -28,7 +28,7 @@ export class OptionValued implements IOptionValued {
     public getShort(): string {
         const declaration: IOptionDeclaration = this.getDeclaration();
         if (!declaration) {
-            throw new Error("Option declaration was removed!");
+            throw new Error("Option declaration was removed.");
         }
         return declaration.getShort();
     }
@@ -36,9 +36,17 @@ export class OptionValued implements IOptionValued {
     public getLong(): string {
         const declaration: IOptionDeclaration = this.getDeclaration();
         if (!declaration) {
-            throw new Error("Option declaration was removed!");
+            throw new Error("Option declaration was removed.");
         }
         return declaration.getLong();
+    }
+
+    public getName(): string {
+        const declaration: IOptionDeclaration = this.getDeclaration();
+        if (!declaration) {
+            throw new Error("Option declaration was removed.");
+        }
+        return declaration.getName();
     }
 
     public getAttribute(): string {
@@ -53,7 +61,7 @@ export class OptionValued implements IOptionValued {
     public getDescription(): string {
         const declaration: IOptionDeclaration = this.getDeclaration();
         if (!declaration) {
-            throw new Error("Option declaration was removed!");
+            throw new Error("Option declaration was removed.");
         }
         return declaration.getDescription();
     }
@@ -61,7 +69,7 @@ export class OptionValued implements IOptionValued {
     public isRequired(): boolean {
         const declaration: IOptionDeclaration = this.getDeclaration();
         if (!declaration) {
-            throw new Error("Option declaration was removed!");
+            throw new Error("Option declaration was removed.");
         }
         return declaration.isRequired();
     }
@@ -69,7 +77,7 @@ export class OptionValued implements IOptionValued {
     public isOptional(): boolean {
         const declaration: IOptionDeclaration = this.getDeclaration();
         if (!declaration) {
-            throw new Error("Option declaration was removed!");
+            throw new Error("Option declaration was removed.");
         }
         return declaration.isOptional();
     }
@@ -77,7 +85,7 @@ export class OptionValued implements IOptionValued {
     public isBool(): boolean {
         const declaration: IOptionDeclaration = this.getDeclaration();
         if (!declaration) {
-            throw new Error("Option declaration was removed!");
+            throw new Error("Option declaration was removed.");
         }
         return declaration.isBool();
     }
@@ -85,7 +93,7 @@ export class OptionValued implements IOptionValued {
     public getType(): string {
         const declaration: IOptionDeclaration = this.getDeclaration();
         if (!declaration) {
-            throw new Error("Option declaration was removed!");
+            throw new Error("Option declaration was removed.");
         }
         return declaration.getType();
     }
@@ -93,7 +101,7 @@ export class OptionValued implements IOptionValued {
     public getDefaultValue(): any {
         const declaration: IOptionDeclaration = this.getDeclaration();
         if (!declaration) {
-            throw new Error("Option declaration was removed!");
+            throw new Error("Option declaration was removed.");
         }
         return declaration.getDefaultValue();
     }
@@ -101,7 +109,7 @@ export class OptionValued implements IOptionValued {
     public getNegativePrefixes(): string[] {
         const declaration: IOptionDeclaration = this.getDeclaration();
         if (!declaration) {
-            throw new Error("Option declaration was removed!");
+            throw new Error("Option declaration was removed.");
         }
         return declaration.getNegativePrefixes();
     }
@@ -109,15 +117,15 @@ export class OptionValued implements IOptionValued {
     public getPreparationFunction(): (value: string) => any {
         const declaration: IOptionDeclaration = this.getDeclaration();
         if (!declaration) {
-            throw new Error("Option declaration was removed!");
+            throw new Error("Option declaration was removed.");
         }
         return declaration.getPreparationFunction();
     }
 
-    public equal(option: string|IOption): boolean {
+    public equal(option: IOptionValued): boolean {
         const declaration: IOptionDeclaration = this.getDeclaration();
         if (!declaration) {
-            throw new Error("Option declaration was removed!");
+            throw new Error("Option declaration was removed.");
         }
         return declaration.equal(option);
     }
