@@ -19,7 +19,7 @@ $ npm install cli-program --save
 - [.options(flags)](#optionflags)
 - [.version(version)](#versionversion)
 - [.arguments(arguments)](#argumentsarguments)
-  - [Arguments declaration format](#)
+  - [Arguments declaration format](#arguments-declaration-format)
 - [.command(command)](#commandcommand)
   - [Command declaration format](#)
   - [Command-specific .action(action)](#)
@@ -183,6 +183,8 @@ require("cli-program").arguments("<required>");
 // combination declare
 require("cli-program").arguments("<argument1> <argument2> [more...]");
 ```
+
+## Arguments declaration format
 
 The arguments can be named anything. Angled brackets (e.g. `<required>`) indicate required input. Square brackets (e.g. `[optional]`) indicate optional input.
 
