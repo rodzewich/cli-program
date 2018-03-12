@@ -13,7 +13,7 @@ var ProgramWrapper = require("../build/index-test").ProgramWrapper,
 
 describe("Errors", function () {
 
-    it("Error: You cannot use undeclared \"-U\" option.", function (done) {
+    it("ParseError: You cannot use undeclared \"-U\" option.", function (done) {
         var program = new ProgramWrapper(),
             content = [];
         stdout(program, function (stdout) {
@@ -24,7 +24,7 @@ describe("Errors", function () {
         });
         exit(program, function (code) {
             expect(code).to.equal(1);
-            expect(cleanColors(content.join("")).replace(/\s+/gm, " ")).to.have.string("Error: You cannot use undeclared \"-U\" option.");
+            expect(cleanColors(content.join("")).replace(/\s+/gm, " ")).to.have.string("ParseError: You cannot use undeclared \"-U\" option.");
             removeProgramDeclaration(program);
             done();
         });
@@ -32,7 +32,7 @@ describe("Errors", function () {
             .parse(null, [null, "program", "-U"]);
     });
 
-    it("Error: You cannot use undeclared \"--undeclared-option\" option.", function (done) {
+    it("ParseError: You cannot use undeclared \"--undeclared-option\" option.", function (done) {
         var program = new ProgramWrapper(),
             content = [];
         stdout(program, function (stdout) {
@@ -43,7 +43,7 @@ describe("Errors", function () {
         });
         exit(program, function (code) {
             expect(code).to.equal(1);
-            expect(cleanColors(content.join("")).replace(/\s+/gm, " ")).to.have.string("Error: You cannot use undeclared \"--undeclared-option\" option.");
+            expect(cleanColors(content.join("")).replace(/\s+/gm, " ")).to.have.string("ParseError: You cannot use undeclared \"--undeclared-option\" option.");
             removeProgramDeclaration(program);
             done();
         });
@@ -51,7 +51,7 @@ describe("Errors", function () {
             .parse(null, [null, "program", "--undeclared-option"]);
     });
 
-    it("Error: You cannot use undeclared \"-U\" option in \"command\"(alias: \"cmd\") command.", function (done) {
+    it("ParseError: You cannot use undeclared \"-U\" option in \"command\"(alias: \"cmd\") command.", function (done) {
         var program = new ProgramWrapper(),
             content = [];
         stdout(program, function (stdout) {
@@ -62,7 +62,7 @@ describe("Errors", function () {
         });
         exit(program, function (code) {
             expect(code).to.equal(1);
-            expect(cleanColors(content.join("")).replace(/\s+/gm, " ")).to.have.string("Error: You cannot use undeclared \"-U\" option in \"command\"(alias: \"cmd\") command.");
+            expect(cleanColors(content.join("")).replace(/\s+/gm, " ")).to.have.string("ParseError: You cannot use undeclared \"-U\" option in \"command\"(alias: \"cmd\") command.");
             removeProgramDeclaration(program);
             done();
         });
@@ -73,7 +73,7 @@ describe("Errors", function () {
             .parse(null, [null, "program", "command", "-U"]);
     });
 
-    it("Error: You cannot use undeclared \"--undeclared-option\" option in \"command\"(alias: \"cmd\") command.", function (done) {
+    it("ParseError: You cannot use undeclared \"--undeclared-option\" option in \"command\"(alias: \"cmd\") command.", function (done) {
         var program = new ProgramWrapper(),
             content = [];
         stdout(program, function (stdout) {
@@ -84,7 +84,7 @@ describe("Errors", function () {
         });
         exit(program, function (code) {
             expect(code).to.equal(1);
-            expect(cleanColors(content.join("")).replace(/\s+/gm, " ")).to.have.string("Error: You cannot use undeclared \"--undeclared-option\" option in \"command\"(alias: \"cmd\") command.");
+            expect(cleanColors(content.join("")).replace(/\s+/gm, " ")).to.have.string("ParseError: You cannot use undeclared \"--undeclared-option\" option in \"command\"(alias: \"cmd\") command.");
             removeProgramDeclaration(program);
             done();
         });
@@ -95,7 +95,7 @@ describe("Errors", function () {
             .parse(null, [null, "program", "command", "--undeclared-option"]);
     });
 
-    it("Error: You cannot use option \"--option\"(\"-O\") without value.", function (done) {
+    it("ParseError: You cannot use option \"--option\"(\"-O\") without value.", function (done) {
         var program = new ProgramWrapper(),
             content = [];
         stdout(program, function (stdout) {
@@ -106,7 +106,7 @@ describe("Errors", function () {
         });
         exit(program, function (code) {
             expect(code).to.equal(1);
-            expect(cleanColors(content.join("")).replace(/\s+/gm, " ")).to.have.string("Error: You cannot use option \"--option\"(\"-O\") without value.");
+            expect(cleanColors(content.join("")).replace(/\s+/gm, " ")).to.have.string("ParseError: You cannot use option \"--option\"(\"-O\") without value.");
             removeProgramDeclaration(program);
             done();
         });
@@ -115,7 +115,7 @@ describe("Errors", function () {
             .parse(null, [null, "program", "--option"]);
     });
 
-    it("Error: You cannot use option \"--option\"(\"-O\") in \"command\"(alias: \"cmd\") command without value.", function (done) {
+    it("ParseError: You cannot use option \"--option\"(\"-O\") in \"command\"(alias: \"cmd\") command without value.", function (done) {
         var program = new ProgramWrapper(),
             content = [];
         stdout(program, function (stdout) {
@@ -126,7 +126,7 @@ describe("Errors", function () {
         });
         exit(program, function (code) {
             expect(code).to.equal(1);
-            expect(cleanColors(content.join("")).replace(/\s+/gm, " ")).to.have.string("Error: You cannot use option \"--option\"(\"-O\") in \"command\"(alias: \"cmd\") command without value.");
+            expect(cleanColors(content.join("")).replace(/\s+/gm, " ")).to.have.string("ParseError: You cannot use option \"--option\"(\"-O\") in \"command\"(alias: \"cmd\") command without value.");
             removeProgramDeclaration(program);
             done();
         });
@@ -138,7 +138,7 @@ describe("Errors", function () {
             .parse(null, [null, "program", "command", "--option"]);
     });
 
-    it("Error: Invalid number of program arguments. Program require 2 argument(s).", function (done) {
+    it("ParseError: Invalid number of program arguments. Program require 2 argument(s).", function (done) {
         var program = new ProgramWrapper(),
             content = [];
         stdout(program, function (stdout) {
@@ -149,7 +149,7 @@ describe("Errors", function () {
         });
         exit(program, function (code) {
             expect(code).to.equal(1);
-            expect(cleanColors(content.join("")).replace(/\s+/gm, " ")).to.have.string("Error: Invalid number of program arguments. Program require 2 argument(s).");
+            expect(cleanColors(content.join("")).replace(/\s+/gm, " ")).to.have.string("ParseError: Invalid number of program arguments. Program require 2 argument(s).");
             removeProgramDeclaration(program);
             done();
         });
@@ -159,7 +159,7 @@ describe("Errors", function () {
             .parse(null, [null, "program", "value1"]);
     });
 
-    it("Error: Invalid number of command arguments. Command \"command\"(alias: \"cmd\") require 2 argument(s).", function (done) {
+    it("ParseError: Invalid number of command arguments. Command \"command\"(alias: \"cmd\") require 2 argument(s).", function (done) {
         var program = new ProgramWrapper(),
             content = [];
         stdout(program, function (stdout) {
@@ -170,7 +170,7 @@ describe("Errors", function () {
         });
         exit(program, function (code) {
             expect(code).to.equal(1);
-            expect(cleanColors(content.join("")).replace(/\s+/gm, " ")).to.have.string("Error: Invalid number of command arguments. Command \"command\"(alias: \"cmd\") require 2 argument(s).");
+            expect(cleanColors(content.join("")).replace(/\s+/gm, " ")).to.have.string("ParseError: Invalid number of command arguments. Command \"command\"(alias: \"cmd\") require 2 argument(s).");
             removeProgramDeclaration(program);
             done();
         });
@@ -181,7 +181,7 @@ describe("Errors", function () {
             .parse(null, [null, "program", "command", "value1"]);
     });
 
-    it("Error: You should specify required option \"--option\"(\"-O\").", function (done) {
+    it("ParseError: You should specify required option \"--option\"(\"-O\").", function (done) {
         var program = new ProgramWrapper(),
             content = [];
         stdout(program, function (stdout) {
@@ -192,7 +192,7 @@ describe("Errors", function () {
         });
         exit(program, function (code) {
             expect(code).to.equal(1);
-            expect(cleanColors(content.join("")).replace(/\s+/gm, " ")).to.have.string("Error: You should specify required option \"--option\"(\"-O\").");
+            expect(cleanColors(content.join("")).replace(/\s+/gm, " ")).to.have.string("ParseError: You should specify required option \"--option\"(\"-O\").");
             removeProgramDeclaration(program);
             done();
         });
@@ -201,7 +201,7 @@ describe("Errors", function () {
             .parse(null, [null, "program"]);
     });
 
-    it("Error: You should specify required option \"--option\"(\"-O\") in \"command\"(alias: \"cmd\") command.", function (done) {
+    it("ParseError: You should specify required option \"--option\"(\"-O\") in \"command\"(alias: \"cmd\") command.", function (done) {
         var program = new ProgramWrapper(),
             content = [];
         stdout(program, function (stdout) {
@@ -212,7 +212,7 @@ describe("Errors", function () {
         });
         exit(program, function (code) {
             expect(code).to.equal(1);
-            expect(cleanColors(content.join("")).replace(/\s+/gm, " ")).to.have.string("Error: You should specify required option \"--option\"(\"-O\") in \"command\"(alias: \"cmd\") command.");
+            expect(cleanColors(content.join("")).replace(/\s+/gm, " ")).to.have.string("ParseError: You should specify required option \"--option\"(\"-O\") in \"command\"(alias: \"cmd\") command.");
             removeProgramDeclaration(program);
             done();
         });
@@ -224,7 +224,7 @@ describe("Errors", function () {
             .parse(null, [null, "program", "command"]);
     });
 
-    it("Error: You should specify command.", function (done) {
+    it("ParseError: You should specify command.", function (done) {
         var program = new ProgramWrapper(),
             content = [];
         stdout(program, function (stdout) {
@@ -235,7 +235,7 @@ describe("Errors", function () {
         });
         exit(program, function (code) {
             expect(code).to.equal(1);
-            expect(cleanColors(content.join("")).replace(/\s+/gm, " ")).to.have.string("Error: You should specify command.");
+            expect(cleanColors(content.join("")).replace(/\s+/gm, " ")).to.have.string("ParseError: You should specify command.");
             removeProgramDeclaration(program);
             done();
         });
@@ -247,7 +247,7 @@ describe("Errors", function () {
             .parse(null, [null, "program"]);
     });
 
-    it("Error: You cannot continue without default handler.", function (done) {
+    it("ParseError: You cannot continue without default handler.", function (done) {
         var program = new ProgramWrapper(),
             content = [];
         stdout(program, function (stdout) {
@@ -258,7 +258,7 @@ describe("Errors", function () {
         });
         exit(program, function (code) {
             expect(code).to.equal(1);
-            expect(cleanColors(content.join("")).replace(/\s+/gm, " ")).to.have.string("Error: You cannot continue without default handler.");
+            expect(cleanColors(content.join("")).replace(/\s+/gm, " ")).to.have.string("ParseError: You cannot continue without default handler.");
             removeProgramDeclaration(program);
             done();
         });
@@ -266,7 +266,7 @@ describe("Errors", function () {
             .parse(null, [null, "program"]);
     });
 
-    it("Error: You cannot continue without handler for \"command\"(alias: \"cmd\") command.", function (done) {
+    it("ParseError: You cannot continue without handler for \"command\"(alias: \"cmd\") command.", function (done) {
         var program = new ProgramWrapper(),
             content = [];
         stdout(program, function (stdout) {
@@ -277,7 +277,7 @@ describe("Errors", function () {
         });
         exit(program, function (code) {
             expect(code).to.equal(1);
-            expect(cleanColors(content.join("")).replace(/\s+/gm, " ")).to.have.string("Error: You cannot continue without handler for \"command\"(alias: \"cmd\") command.");
+            expect(cleanColors(content.join("")).replace(/\s+/gm, " ")).to.have.string("ParseError: You cannot continue without handler for \"command\"(alias: \"cmd\") command.");
             removeProgramDeclaration(program);
             done();
         });
