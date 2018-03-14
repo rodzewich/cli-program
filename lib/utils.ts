@@ -208,7 +208,7 @@ export function removeCommandDeclaration(command: ICommandWrapper): void {
 }
 
 export function showError(error: Error, help: string, stdout: (text: string) => void, stderr: (text: string) => void): void {
-    const width: number = process.stdout.columns || 120, // todo: ???
+    const width: number = process.stdout.columns,
           lines: string[] = error.stack.split("\n");
     if (help) {
         stdout(help);
@@ -232,7 +232,7 @@ export function showError(error: Error, help: string, stdout: (text: string) => 
 }
 
 export function formatLine(line: string): string[] {
-    const width: number = process.stdout.columns || 120; // todo: ???
+    const width: number = process.stdout.columns;
     const result: string[] = [];
     while (line.length > width - 4) {
         result.push(line.substr(0, width - 4));
