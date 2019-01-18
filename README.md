@@ -40,15 +40,19 @@ $ npm install cli-program --save
 
 ## .name(name)
 
-Program name is declared with the `.name(name: string)` method, also serving as documentation for the program name. The program name can be declared anything or skipped. As default value program uses name of executable filename.
+You can set name for your program. If you set name of your program then name going to show in title of your virtual terminal window, going to show in process list and in help program describtion. You can set program name with `.name(name: string)` method. Setting name is optional operation and can be skip.
+
+### Example:
 
 ```js
 require("cli-program")
     .name("My Awesome Program")
-    .parse(function () {
-        // bootstrap
+    .parse(() => {
+        // bootstrap of your app
     });
 ```
+
+### Command line usage:
 
 ```
 $ program --help
