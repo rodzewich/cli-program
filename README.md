@@ -15,7 +15,7 @@ $ npm install cli-program --save
 
 ## CONTENT
 
-- [Setting program name](#program-name-method-namename)
+- [Setting program name](#setting-program-name-method-namename)
 - [.description(description)](#descriptiondescription)
 - [.usage(usage)](#usageusage)
 - [.options(flags)](#optionflags)
