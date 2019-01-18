@@ -15,7 +15,7 @@ $ npm install cli-program --save
 
 ## CONTENT
 
-- [Program name](#program-name-method-namename)
+- [Setting program name](#program-name-method-namename)
 - [.description(description)](#descriptiondescription)
 - [.usage(usage)](#usageusage)
 - [.options(flags)](#optionflags)
@@ -38,7 +38,7 @@ $ npm install cli-program --save
 - [Automated --help](#automated---help)
 - [Automated --version](#automated---version)
 
-## Program name (method: .name(name))
+## Setting program name (method: .name(name))
 
 You can set name for your program. If you set name of your program then name going to show in title of your virtual terminal window, going to show in process list and in help program describtion. You can set program name with `.name(name: string)` method. Setting name is optional operation and can be skip.
 
