@@ -42,9 +42,9 @@ $ npm install cli-program --save
 
 You can set name for your program. If you set name of your program then name going to show in title of your virtual terminal window, going to show in process list and in help program describtion. You can set program name with `.name(name: string)` method. Declaring name is optional operation and can be skip.
 
-*Default*: current file name without extension.
+**Default:** current file name without extension
 
-### Example:
+**Example:**
 
 ```js
 require("cli-program")
@@ -54,7 +54,7 @@ require("cli-program")
     });
 ```
 
-### Command line usage:
+**Command line usage:**
 
 ```
 $ program --help
@@ -69,7 +69,7 @@ Usage:
 
 You can set detailed multiline description for your program. If you set description of your program then desciption going to show in help program description. You can set program description with `.description(description: string)` method. Declaring description is optional operation and can be skip.
 
-### Example:
+**Example:**
 
 ```js
 require("cli-program")
@@ -80,7 +80,7 @@ require("cli-program")
     });
 ```
 
-### Command line usage:
+**Command line usage:**
 
 ```
 $ program --help
@@ -97,7 +97,7 @@ Usage:
 
 Usage block generates automatically but you can declare custom usage block and describe usage format yourself. Declaration usage is optional operation and can be skip. Declare usage you can with `.usage()` method.
 
-### Example:
+**Example:**
 
 ```js
 require("cli-program")
@@ -107,7 +107,7 @@ require("cli-program")
     });
 ```
 
-### Command line usage:
+**Command line usage:**
 
 ```
 $ program --help
