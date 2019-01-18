@@ -16,7 +16,7 @@ $ npm install cli-program --save
 ## CONTENT
 
 - [Setting program name](#setting-program-name-method-namename)
-- [.description(description)](#descriptiondescription)
+- [Setting program description](#setting-program-description-method-descriptiondescription)
 - [.usage(usage)](#usageusage)
 - [.options(flags)](#optionflags)
   - [Flags format](#flags-format)
@@ -63,9 +63,11 @@ Usage:
   program
 ```
 
-## .description(description)
+## Setting program description (method: .description(description))
 
-Program description is declared with the `.description(description: string)` method, also serving as documentation for the program description. The program description can be declared anything or skipped.
+You can set detailed multiline description for your program. If you set description of your program then desciption going to show in help program description. You can set program description with `.description(description: string)` method. Setting description is optional operation and can be skip.
+
+### Example:
 
 ```js
 require("cli-program")
@@ -75,6 +77,8 @@ require("cli-program")
         // bootstrap
     });
 ```
+
+### Command line usage:
 
 ```
 $ program --help
