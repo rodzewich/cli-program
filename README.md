@@ -17,7 +17,7 @@ $ npm install cli-program --save
 
 - [Setting program name](#setting-program-name-method-namename)
 - [Setting program description](#setting-program-description-method-descriptiondescription)
-- [.usage(usage)](#usageusage)
+- [Setting usage block](#setting-usage-block-method-usageusage)
 - [.options(flags)](#optionflags)
   - [Flags format](#flags-format)
   - [Option description](#option-description)
@@ -74,7 +74,7 @@ require("cli-program")
     .name("My Awesome Program")
     .description("Multi-line detailed description")
     .parse(function () {
-        // bootstrap
+        // bootstrap of your app
     });
 ```
 
@@ -91,17 +91,21 @@ Usage:
   program
 ```
 
-## .usage(usage)
+## Setting usage block (method: .usage(usage))
 
-Usage format is declared with the `.usage(usage: string)` method, also serving as documentation for the usage format. The usage format can be declared anything or skipped. As default value program automatically generates usage by program declaration.
+Usage block generates automatically but you can declare custom usage block and describe usage format yourself. Declaration usage is optional operation and can be skip. Declare usage you can with `.usage()` method.
+
+### Example:
 
 ```js
 require("cli-program")
     .usage("[options...]")
     .parse(function () {
-        // bootstrap
+        // bootstrap of your app
     });
 ```
+
+### Command line usage:
 
 ```
 $ program --help
