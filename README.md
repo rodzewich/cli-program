@@ -15,9 +15,9 @@ $ npm install cli-program --save
 
 ## CONTENT
 
-- [Setting program name](#setting-program-name-method-namename)
-- [Setting program description](#setting-program-description-method-descriptiondescription)
-- [Setting usage block](#setting-usage-block-method-usageusage)
+- [Declaring program name](#declaring-program-name-method-namename)
+- [Declaring program description](#declaring-program-description-method-descriptiondescription)
+- [Declaring usage block](#declaring-usage-block-method-usageusage)
 - [.options(flags)](#optionflags)
   - [Flags format](#flags-format)
   - [Option description](#option-description)
@@ -38,9 +38,11 @@ $ npm install cli-program --save
 - [Automated --help](#automated---help)
 - [Automated --version](#automated---version)
 
-## Setting program name (method: .name(name))
+## Declaring program name (method: .name(name))
 
-You can set name for your program. If you set name of your program then name going to show in title of your virtual terminal window, going to show in process list and in help program describtion. You can set program name with `.name(name: string)` method. Setting name is optional operation and can be skip.
+You can set name for your program. If you set name of your program then name going to show in title of your virtual terminal window, going to show in process list and in help program describtion. You can set program name with `.name(name: string)` method. Declaring name is optional operation and can be skip.
+
+*Default*: current file name without extension.
 
 ### Example:
 
@@ -63,9 +65,9 @@ Usage:
   program
 ```
 
-## Setting program description (method: .description(description))
+## Declaring program description (method: .description(description))
 
-You can set detailed multiline description for your program. If you set description of your program then desciption going to show in help program description. You can set program description with `.description(description: string)` method. Setting description is optional operation and can be skip.
+You can set detailed multiline description for your program. If you set description of your program then desciption going to show in help program description. You can set program description with `.description(description: string)` method. Declaring description is optional operation and can be skip.
 
 ### Example:
 
@@ -91,7 +93,7 @@ Usage:
   program
 ```
 
-## Setting usage block (method: .usage(usage))
+## Declaring usage block (method: .usage(usage))
 
 Usage block generates automatically but you can declare custom usage block and describe usage format yourself. Declaration usage is optional operation and can be skip. Declare usage you can with `.usage()` method.
 
