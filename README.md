@@ -1,6 +1,6 @@
 # cli-program
 
-The complete solution for node.js command-line interfaces.
+The complete and simple to configure solution for run applications from command-line interface. This solution supports all kind of elements in command line, etc commands, arguments and parameters.
 
 [![NPM Version](http://img.shields.io/npm/v/cli-program.svg?style=flat)](https://www.npmjs.org/package/cli-program)
 [![NPM Downloads](https://img.shields.io/npm/dm/cli-program.svg?style=flat)](https://www.npmjs.org/package/cli-program)
@@ -13,7 +13,7 @@ $ npm install cli-program --save
 
 ## Content
 
-- [.name(name)](#namename)
+- [.name(name)](#namename) Define application name.
 - [.description(description)](#descriptiondescription)
 - [.usage(usage)](#usageusage)
 - [.options(flags)](#optionflags)
