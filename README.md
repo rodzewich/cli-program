@@ -152,6 +152,40 @@ require("cli-program")
 
 ### Option flags
 
+For declaring option you need declare required parameter flags. It is string and it has special format for describing options.
+
+**Examples:**
+
+```
+--long
+``` 
+
+Declared only long option without short.
+
+```
+-s, --long
+``` 
+
+Declared both variants short and long.
+
+```
+-s, --long [type]
+``` 
+
+Declared both variants short and long with data type.
+
+```
+-s, --long [type=default]
+``` 
+
+Declared both variants short and long with data type and default value.
+
+**Also**
+
+Short flags may be passed as one single flag, for example `-abc` is equivalent to `-a -b -c`. 
+
+Multi-word flags like as "--template-engine" for example are going to transit as camelcased properties in data object.
+
 ### Option description
 
 ### Option default value
@@ -159,9 +193,6 @@ require("cli-program")
 ### Option negative prefixes
 
 ### Option preparation function
-
-
-Short flags may be passed as a single arg, for example `-abc` is equivalent to `-a -b -c`. Multi-word options such as "--template-engine" are camel-cased, becoming `opts.templateEngine` etc.
 
 Note that multi-word options starting with `--no` prefix negate the boolean value of the following word. For example, `--no-sauce` sets the value of `args.sauce` to false.
 
