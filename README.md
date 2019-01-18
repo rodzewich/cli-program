@@ -122,11 +122,11 @@ Usage:
   program [options...]
 ```
 
-## Declaring common options (method: .option(flags, description, defaultValue))
+## Declaring common options (method: .option(flags, description, defaultValue, negativePrefixes, preparationFunction))
 
+Your cli program in general can take options which started with dash or double dash. For this case for declaring you options you can use `.option(flags: string, description?: string, defaultValue?: any, negativePrefixes?: string[], preparationFunction?: (value: any) => any)` method. 
 
-
-Options are defined with the `.option(flags: string, description?: string, defaultValue?: any, negativePrefixes?: string[], preparationFunction?: (value: any) => any)` method, also serving as documentation for the options. The example below parses args and options from `process.argv`.
+**Example:**
 
 ```js
 require("cli-program")
