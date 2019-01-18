@@ -69,6 +69,8 @@ Usage:
 
 You can set detailed multiline description for your program. If you set description of your program then desciption going to show in help program description. You can set program description with `.description(description: string)` method. Declaring description is optional operation and can be skip.
 
+**Default:** empty 
+
 **Example:**
 
 ```js
@@ -96,6 +98,8 @@ Usage:
 ## Declaring usage block (method: .usage(usage))
 
 Usage block generates automatically but you can declare custom usage block and describe usage format yourself. Declaration usage is optional operation and can be skip. Declare usage you can with `.usage()` method.
+
+**Default:** generated
 
 **Example:**
 
