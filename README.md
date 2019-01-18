@@ -18,7 +18,7 @@ $ npm install cli-program --save
 - [Declaring program name](#declaring-program-name-method-namename)
 - [Declaring program description](#declaring-program-description-method-descriptiondescription)
 - [Declaring usage block](#declaring-usage-block-method-usageusage)
-- [Declaring common options](#declaring-common-options-method-option-flags)
+- [Declaring common options](#declaring-common-options-method-optionflags-description-defaultvalue-negativeprefixes-preparationfunction)
   - [Option flags](#flags)
   - [Option description](#description)
   - [Option default value](#default-value)
@@ -150,15 +150,15 @@ require("cli-program")
     });
 ```
 
-### flags
+### Option flags
 
-### description
+### Option description
 
-### defaultValue
+### Option default value
 
-### negativePrefixes
+### Option negative prefixes
 
-### preparationFunction
+### Option preparation function
 
 
 Short flags may be passed as a single arg, for example `-abc` is equivalent to `-a -b -c`. Multi-word options such as "--template-engine" are camel-cased, becoming `opts.templateEngine` etc.
