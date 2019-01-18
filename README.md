@@ -18,7 +18,7 @@ $ npm install cli-program --save
 - [Declaring program name](#declaring-program-name-method-namename)
 - [Declaring program description](#declaring-program-description-method-descriptiondescription)
 - [Declaring usage block](#declaring-usage-block-method-usageusage)
-- [.options(flags)](#optionflags)
+- [Declaring common options](#declaring-common-options-method-option-flags)
   - [Flags format](#flags-format)
   - [Option description](#option-description)
   - [Default value](#default-value)
@@ -77,7 +77,7 @@ You can set detailed multiline description for your program. If you set descript
 require("cli-program")
     .name("My Awesome Program")
     .description("Multi-line detailed description")
-    .parse(function () {
+    .parse(() => {
         // bootstrap of your app
     });
 ```
@@ -106,7 +106,7 @@ Usage block generates automatically but you can declare custom usage block and d
 ```js
 require("cli-program")
     .usage("[options...]")
-    .parse(function () {
+    .parse(() => {
         // bootstrap of your app
     });
 ```
@@ -122,7 +122,9 @@ Usage:
   program [options...]
 ```
 
-## .option(flags)
+## Declaring common options (method: .option(flags, description, defaultValue))
+
+
 
 Options are defined with the `.option(flags: string, description?: string, defaultValue?: any, negativePrefixes?: string[], preparationFunction?: (value: any) => any)` method, also serving as documentation for the options. The example below parses args and options from `process.argv`.
 
@@ -133,7 +135,7 @@ require("cli-program")
     .option("-P, --pineapple", "Add pineapple")
     .option("-b, --bbq-sauce", "Add bbq sauce")
     .option("-c, --cheese [type]", "Add the specified type of cheese [marble]", "marble")
-    .parse(function (args, opts) {
+    .parse((args, opts) => {
         console.log("you ordered a pizza with:");
         if (opts.peppers) {
             console.log("  - peppers");
@@ -156,7 +158,7 @@ Note that multi-word options starting with `--no` prefix negate the boolean valu
 require("cli-program")
     .version("0.1.0")
     .option("-p, --password <string>", "Password to connect", null, ["no", "without"])
-    .parse(function (args, opts) {
+    .parse((args, opts) => {
         if (opts.password === false) {
             console.log("Without password!");
         } else {
@@ -216,7 +218,7 @@ The arguments can be named anything. Angled brackets (e.g. `<required>`) indicat
 ```js
 require("cli-program")
     .arguments("<arg1> [args...]")
-    .parse(function (args) {
+    .parse((args) => {
         console.log("args: %s", JSON.stringify(args));
     });
 // $ node path/to/program value1 value2 value3
@@ -226,7 +228,7 @@ require("cli-program")
 ```js
 require("cli-program")
     .arguments("<arg1> [arg2]")
-    .parse(function (args) {
+    .parse((args) => {
         console.log("args: %s", JSON.stringify(args));
     });
 // $ node path/to/program value1
@@ -246,7 +248,7 @@ You can attach handler to a command.
 ```js
 require("cli-program")
     .command("rm <dir>") // comand with required argument
-    .action(function (args, opts) {
+    .action((args, opts) => {
         console.log("remove " + args.dir + (opts.recursive ? " recursively" : ""))
     })
     .parse()
@@ -260,7 +262,7 @@ You can attach options to a command.
 require("cli-program")
     .command("rm <dir>") // comand with required argument
     .option("-r, --recursive", "Remove recursively")
-    .action(function (args, opts) {
+    .action((args, opts) => {
         console.log("remove " + args.dir + (opts.recursive ? " recursively" : ""))
     })
     .parse()
@@ -276,7 +278,7 @@ You can attach description to a command.
 require("cli-program")
     .command("rm <dir>") // comand with required argument
     .description("Remove directory")
-    .action(function (args, opts) {
+    .action((args, opts) => {
         console.log("remove " + args.dir + (opts.recursive ? " recursively" : ""))
     })
     .parse()
@@ -290,7 +292,7 @@ You can attach alias to a command.
 require("cli-program")
     .command("remove <dir>") // comand with required argument
     .alias("rm")
-    .action(function (args, opts) {
+    .action((args, opts) => {
         console.log("remove " + args.dir + (opts.recursive ? " recursively" : ""))
     })
     .parse()
@@ -304,7 +306,7 @@ You can attach usage to a command.
 require("cli-program")
     .command("remove <dir>") // comand with required argument
     .usage("...special usage format...")
-    .action(function (args, opts) {
+    .action((args, opts) => {
         console.log("remove " + args.dir + (opts.recursive ? " recursively" : ""))
     })
     .parse()
@@ -317,19 +319,19 @@ var program = require("cli-program");
 program
   .version("0.1.0")
   .command("install [name]", "Install one or more packages")
-  .action(function (args, opts) {
+  .action((args, opts) => {
     console.log("args: " + JSON.stringify(args));
     console.log("opts: " + JSON.stringify(opts));
   });
 program
   .command("search [query]", "Search with optional query")
-  .action(function (args, opts) {
+  .action((args, opts) => {
     console.log("args: " + JSON.stringify(args));
     console.log("opts: " + JSON.stringify(opts));
   });
 program
   .command("list", "List packages installed")
-  .action(function (args, opts) {
+  .action((args, opts) => {
     console.log("args: " + JSON.stringify(args));
     console.log("opts: " + JSON.stringify(opts));
   });
